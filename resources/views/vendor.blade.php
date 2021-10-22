@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta author="Sulabh Nepal">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/node_css/bootstrap.min.css">
+    <title>{{$info->get('utitle')}}</title>
+        <!-- CSS -->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500&display=swap">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+        <link rel="stylesheet" href="assets/css/jquery.mCustomScrollbar.min.css">
+        <link rel="stylesheet" href="assets/css/animate.css">
+        <link rel="stylesheet" href="assets/css/style.css">
+        <link rel="stylesheet" href="assets/css/media-queries.css">
+
+
+        <!-- Favicon and touch icons -->
+        <link rel="shortcut icon" href="assets/ico/favicon.png">
+        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="assets/ico/apple-touch-icon-144-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="assets/ico/apple-touch-icon-114-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="assets/ico/apple-touch-icon-72-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" href="assets/ico/apple-touch-icon-57-precomposed.png">
+
+</head>
+<body>
+<!-- Wrapper -->
+    	<div class="wrapper">
+
+			<!-- Sidebar -->
+			<nav class="sidebar">
+
+				<!-- close sidebar menu -->
+				<div class="dismiss">
+					<i class="fas fa-arrow-left"></i>
+				</div>
+
+				<div class="logo">
+					<h3><a href="/">{{$info->get('utitle')}}</a></h3>
+				</div>
+
+				<ul class="list-unstyled menu-elements">
+					<li class="active">
+						<a class="" href="/#top-content"><i class="fas fa-home"></i> Home</a>
+					</li>
+					<li>
+						<a class="" href="/#charts"><i class="fas fa-cog"></i> Charts</a>
+					</li>
+					<li>
+						<a class="" href="/#section-2"><i class="fas fa-user"></i>Tabulated Info</a>
+					</li>
+					<li id="new">
+						<a class="" href="/new_user"><i class="fas fa-plus"></i>Add New User</a>
+					</li>
+					<li id="">
+						<a class="" href="/manage_users"><i class="fas fa-plus"></i>Manage Users</a>
+					</li>
+					<li>
+						<a class="" href="/logout"><i class="fas fa-sign-out"></i>LogOut</a>
+					</li>
+				</ul>
+
+				<div class="to-top">
+					<a class="btn btn-primary btn-customized-3" href="#" role="button">
+	                    <i class="fas fa-arrow-up"></i> Top
+	                </a>
+				</div>
+
+				<div class="dark-light-buttons">
+					<a class="btn btn-primary btn-customized-4 btn-customized-dark" href="#" role="button">Dark</a>
+					<a class="btn btn-primary btn-customized-4 btn-customized-light" href="#" role="button">Light</a>
+				</div>
+
+			</nav>
+			<!-- End sidebar -->
+
+			<!-- Dark overlay -->
+    		<div class="overlay"></div>
+
+			<!-- Content -->
+			<div class="content">
+
+				<!-- open sidebar menu -->
+				<a class="btn btn-primary btn-customized open-menu" href="#" role="button">
+                    <i class="fas fa-align-left"></i> <span>Menu</span>
+                </a>
+
+		        <!-- Top content -->
+		        <div class="top-content section-container" id="top-content">
+			        <div class="container">
+			            <div class="row">
+			                <div class="col col-md-10 offset-md-1 col-lg-8 offset-lg-2">
+			                	<h1 class="wow fadeIn">{{$info->get('utitle')}}</h1>
+			                	<div class="buttons wow fadeInUp">
+									<a class="btn btn-primary btn-customized scroll-link" href="#section-1" role="button">
+										<i class="fa fa-area-chart" aria-hidden="true"></i> See Chart of visitors
+									</a>
+									<a class="btn btn-primary btn-customized-2 scroll-link" href="#section-2" role="button">
+										<i class="fas fa-table"></i> Tabulated Info
+									</a>
+								</div>
+			                </div>
+			            </div>
+			        </div>
+		        </div>
+                @yield('content')
+	        </div>
+	        <!-- End content -->
+
+        </div>
+<!--End Wrapper -->
+</body>
+<script src="../jq/jquery.js" type="text/javascript"></script>
+<script src="../node_js/bootstrap.min.js" type="text/javascript"></script>
+<script>
+	if({{$info->get('per')}} != 0){
+		document.getElementById('new').style.display="none"
+	}
+</script>
+
+    <!-- Javascript -->
+	<script src="assets/js/jquery-3.3.1.min.js"></script>
+	<script src="assets/js/jquery-migrate-3.0.0.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="assets/js/jquery.backstretch.min.js"></script>
+    <script src="assets/js/wow.min.js"></script>
+    <script src="assets/js/jquery.waypoints.min.js"></script>
+    <script src="assets/js/jquery.mCustomScrollbar.concat.min.js"></script>
+    <script src="assets/js/scripts.js"></script>
+
+</html>
