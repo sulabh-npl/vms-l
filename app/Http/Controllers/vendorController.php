@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
+use DataTables;
 
 class vendorController extends Controller
 {
@@ -48,6 +49,30 @@ class vendorController extends Controller
         $req->session()->flush();
         return redirect("/login");
     }
+    function manage_users(Request $req)
+    {
+        $re = DB::select("SELECT * FROM " . $req->session()->get('uid') . "_staff");
+        $re_json = json_encode($re);
+        return view("manage_users", ["users" => $re, "staff_json" => $re_json]);
+    }
+    function new_user(Request $req)
+    {
+        if (!session()->get('access') || session()->get('per') != 0) {
+            return redirect("/login?error=Login with permitted account");
+        }
+        if (isset($_GET['msg'])) {
+            $msg = $_GET['msg'];
+        } else {
+            $msg = "";
+        }
+        if (session()->get('section_id') == 0) {
+            $result = DB::select('select * from ' . session()->get('uid') . "_sections");
+        } else {
+            $result = null;
+        }
+        return view("new_user", ["sections" => $result, "msg" => $msg]);
+    }
+
     function otp(Request $req)
     {
         $rslt = vendor::where('name', $req['n'])->first();
@@ -76,5 +101,12 @@ class vendorController extends Controller
         session(['otp' => Hash::make($details['otp'])]);
         Mail::to($req['uname'])->send(new loginMail($details));
         return view('otp');
+    }
+    function post_new_user(Request $req)
+    {
+        $hashed = bcrypt($req['password'], ['rounds' => 4]);
+        // $hashed = Hash::make($req['password'], ['rounds' => 3]);
+        DB::insert("insert into " . $req->session()->get('uid') . "_staff (name, phone, email, password, permission, section_id) VALUES (?,?,?,?,?,?)", [$req['name'], $req['phone'], $req['email'], $hashed, $req['per'], $req['section_id']]);
+        return redirect('/new_user?msg=User added sucessfully');
     }
 }

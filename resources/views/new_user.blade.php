@@ -767,18 +767,21 @@ input.checkbox:checked:after {
 }
 </style>
 <div class="main-w3layouts wrapper">
-    {{msg}}
+    {{$msg}}
 		<h1>Add New User</h1>
 		<div class="main-agileinfo">
 			<div class="agileits-top">
 				<form action="/post_new_user" method="POST">
+                    @csrf
 					<input class="text" type="text" name="name" placeholder="Name" required="">
 					<input class="text" type="text" name="phone" placeholder="Phone Number" required="">
 					<input class="email" type="text" name="email" placeholder="Email Address" required="">
 					<input class="password" type="text" name="password" placeholder="Password" required="">
                     <select  name="section_id">
                         <option value="0">Main</option>
-                        {{{options}}}
+                        @foreach($sections as $section)
+                        <option value="{{$section->id}}">{{$section->name}}</option>
+                        @endforeach
                     </select>
                     <select  name="per">
                         <option value="0">Admin</option>

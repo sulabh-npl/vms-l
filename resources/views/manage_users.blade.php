@@ -1,10 +1,45 @@
 @extends('vendor')
 @section('content')
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs5/jszip-2.5.0/dt-1.11.3/b-2.0.1/b-colvis-2.0.1/b-html5-2.0.1/date-1.1.1/fh-3.2.0/kt-2.6.4/r-2.2.9/rg-1.1.3/sc-2.0.5/sb-1.2.2/sp-1.4.0/sl-1.3.3/datatables.min.css"/>
- <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
-<script type="text/javascript" src="https://cdn.datatables.net/v/bs5/jszip-2.5.0/dt-1.11.3/b-2.0.1/b-colvis-2.0.1/b-html5-2.0.1/date-1.1.1/fh-3.2.0/kt-2.6.4/r-2.2.9/rg-1.1.3/sc-2.0.5/sb-1.2.2/sp-1.4.0/sl-1.3.3/datatables.min.js"></script>
+<style>
+    .modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+/* The Close Button */
+.close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+</style>
+<?php phpinfo(); ?>
 <table id="tab" class="display" style="width:100%">
         <thead>
             <tr>
@@ -12,30 +47,95 @@
                 <th>Email</th>
                 <th>Phone</th>
                 <th>Permission</th>
+                <th>Edit</th>
             </tr>
         </thead>
+        <tbody>
+            @foreach ($users as $user)
+            <tr>
+                <td>{{$user->name}}</td>
+                <td>{{$user->email}}</td>
+                <td>{{$user->phone}}</td>
+                <td>@switch($user->permission)
+                    @case(1)
+                        Editor
+                        @break
+                    @case(2)
+                        Viewer
+                        @break
+                    @default
+                        Admin
+                @endswitch</td>
+                <td><button onclick="User({{$user->id}})" class="btn btn-primary">Edit</button></td>
+            </tr>
+            @endforeach
+        </tbody>
         <tfoot>
             <tr>
                 <th>Name</th>
                 <th>Email</th>
                 <th>Phone</th>
                 <th>Permission</th>
+                <th>Edit</th>
             </tr>
         </tfoot>
     </table>
+    <!-- The Modal -->
+<div id="myModal" class="modal">
+
+    <!-- Modal content -->
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <p>
+        <b>Staff Detail</b><br>
+        <label for="Name">Name: </label>
+        <input type="text" name="" id="name"><br>
+        <label for="Name">Email: </label>
+        <input type="text" name="" id="Email"><br>
+        <label for="Name">Phone: </label>
+        <input type="text" name="" id="Phone"><br>
+        <label for="Name">Password: </label>
+        <input type="text" name="" id="Password"><br>
+        <label for="Permission">Permission: </label>
+        <select name="per" id="per">
+            <option value="0">Admin</option>
+            <option value="1">Editor</option>
+            <option value="2">Viewer</option>
+        </select><br>
+    </p>
+    </div>
+
+  </div>
+    <script>
+        // Get the modal
+        var modal = document.getElementById("myModal");
+
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
+
+        // When the user clicks the button, open the modal
+        function User(id) {
+            var data = {{{$staff_json}}}
+            console.log(data);
+          modal.style.display = "block";
+        }
+
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function() {
+          modal.style.display = "none";
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+          if (event.target == modal) {
+            modal.style.display = "none";
+          }
+        }
+        </script>
 <script>
-/*$(document).ready( function () {
-    var data = {{{data}}}
-    $('#tab').DataTable({
-        "data":data,
-        "columns": [
-        {"data":'name'},
-        {"data":'email'},
-        {"data":'phone'},
-        {"data":'permission'}
-        ]
-    });
+$(document).ready( function () {
+    $('#tab').DataTable();
 } );
-*/
+
 </script>
 @endsection

@@ -19,3 +19,10 @@ Route::get('/login', [vendorController::class, "login"]);
 Route::post("/logged", [vendorController::class, "logged"]);
 Route::get('/logout', [vendorController::class, "logout"]);
 Route::post("/otp", [vendorController::class, "otp"]);
+
+Route::get('/new_user', [vendorController::class, "new_user"]);
+Route::post("/post_new_user", [vendorController::class, "post_new_user"]);
+
+Route::get('/manage_users', [vendorController::class, "manage_users"]);
+
+Route::get('staff/list', [vendorController::class, 'manage_users_Data'])->name('staff.list');
