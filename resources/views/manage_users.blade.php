@@ -39,7 +39,6 @@
   cursor: pointer;
 }
 </style>
-<?php phpinfo(); ?>
 <table id="tab" class="display" style="width:100%">
         <thead>
             <tr>
@@ -47,12 +46,15 @@
                 <th>Email</th>
                 <th>Phone</th>
                 <th>Permission</th>
+                @if (Session::get('section_id')==0)
+                    <th>Section</th>
+                @endif
                 <th>Edit</th>
             </tr>
         </thead>
         <tbody>
             @foreach ($users as $user)
-            <tr>
+            <tr id="{{$user->id}}">
                 <td>{{$user->name}}</td>
                 <td>{{$user->email}}</td>
                 <td>{{$user->phone}}</td>
@@ -66,7 +68,12 @@
                     @default
                         Admin
                 @endswitch</td>
-                <td><button onclick="User({{$user->id}})" class="btn btn-primary">Edit</button></td>
+                @if (Session::get('section_id')==0)
+                <td>{{$user->sec_name}}</td>
+                @endif
+                <td><button onclick="User({{$user->id}})" class="btn btn-primary">Edit</button>
+                    <button type="button" onclick="del({{$user->id}})" class="btn btn-secondary">Delete</button>
+                </td>
             </tr>
             @endforeach
         </tbody>
@@ -76,6 +83,9 @@
                 <th>Email</th>
                 <th>Phone</th>
                 <th>Permission</th>
+                @if (Session::get('section_id')==0)
+                    <th>Section</th>
+                @endif
                 <th>Edit</th>
             </tr>
         </tfoot>
@@ -86,23 +96,26 @@
     <!-- Modal content -->
     <div class="modal-content">
       <span class="close">&times;</span>
-      <p>
+      <p><form action="/update/staff" method="POST">
         <b>Staff Detail</b><br>
+        @csrf
+        <input type="number" name="id" id="id" hidden>
         <label for="Name">Name: </label>
-        <input type="text" name="" id="name"><br>
+        <input type="text" name="name" id="Name"><br>
         <label for="Name">Email: </label>
-        <input type="text" name="" id="Email"><br>
+        <input type="text" name="email" id="Email"><br>
         <label for="Name">Phone: </label>
-        <input type="text" name="" id="Phone"><br>
+        <input type="text" name="phone" id="Phone"><br>
         <label for="Name">Password: </label>
-        <input type="text" name="" id="Password"><br>
+        <input type="text" name="password" placeholder="Enter new password to update " id="Password"><br>
         <label for="Permission">Permission: </label>
-        <select name="per" id="per">
+        <select name="per" id="Per">
             <option value="0">Admin</option>
             <option value="1">Editor</option>
             <option value="2">Viewer</option>
         </select><br>
-    </p>
+        <button class="btn btn-primary">Save</button>
+    </form></p>
     </div>
 
   </div>
@@ -115,11 +128,22 @@
 
         // When the user clicks the button, open the modal
         function User(id) {
-            var data = {{{$staff_json}}}
-            console.log(data);
+            $.get("/users/"+id, function(data, status){
+                var d = JSON.parse(data)[0];
+                document.getElementById("Name").value = d.name;
+                document.getElementById("Email").value = d.email;
+                document.getElementById("Phone").value = d.phone;
+                document.getElementById("Per").value = d.permission;
+                document.getElementById("id").value = d.id;
+            });
+            // console.log(data);
           modal.style.display = "block";
-        }
 
+        }
+        function del(id){
+                $.get("delete_users/"+id);
+                document.getElementById(id).style.display= "none";
+            }
         // When the user clicks on <span> (x), close the modal
         span.onclick = function() {
           modal.style.display = "none";

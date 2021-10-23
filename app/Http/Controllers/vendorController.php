@@ -51,9 +51,15 @@ class vendorController extends Controller
     }
     function manage_users(Request $req)
     {
-        $re = DB::select("SELECT * FROM " . $req->session()->get('uid') . "_staff");
-        $re_json = json_encode($re);
-        return view("manage_users", ["users" => $re, "staff_json" => $re_json]);
+        if ($req->session()->get('section_id') == 0) {
+            $id = $req->session()->get('uid');
+            $staff = $id . "_staff";
+            $sections = $id . "_sections";
+            $re = DB::table($sections)->join($staff, "$sections.id", "=", "$staff.section_id")->select("$staff.*", "$sections.name as sec_name")->get();
+            // $re = DB::select("SELECT $staff.name, $staff.email, $staff.phone, $staff.permission, $sections.name FROM $staff INNER JOIN $sections ON $staff.section_id=$sections.id");
+        }
+        // $re = DB::select("SELECT * FROM " . $req->session()->get('uid') . "_staff");
+        return view("manage_users", ["users" => $re]);
     }
     function new_user(Request $req)
     {
@@ -108,5 +114,37 @@ class vendorController extends Controller
         // $hashed = Hash::make($req['password'], ['rounds' => 3]);
         DB::insert("insert into " . $req->session()->get('uid') . "_staff (name, phone, email, password, permission, section_id) VALUES (?,?,?,?,?,?)", [$req['name'], $req['phone'], $req['email'], $hashed, $req['per'], $req['section_id']]);
         return redirect('/new_user?msg=User added sucessfully');
+    }
+    function staff($id, Request $req)
+    {
+        if ($req->session()->get('access') == true && $req->session()->get('per') == 0) {
+            $res = DB::select('select id,name,email,phone,permission from ' . $req->session()->get('uid') . '_staff where id = ?', [$id]);
+            return json_encode($res);
+        } else {
+            return "You are not permitted to view.";
+        }
+    }
+    function staff_delete($id, Request $req)
+    {
+        if ($req->session()->get('access') == true && $req->session()->get('per') == 0) {
+            DB::delete('delete from ' . $req->session()->get('uid') . '_staff where id = ?', [$id]);
+            return "sucess";
+        } else {
+            return "You are not permitted to delete.";
+        }
+    }
+    function staff_update(Request $req)
+    {
+        if ($req->session()->get('access') == true && $req->session()->get('per') == 0) {
+            if ($req['password'] != "") {
+                $hashed = bcrypt($req['password'], ['rounds' => 4]);
+                DB::update("update " . $req->session()->get('uid') . "_staff set name = ?, phone = ?, email = ?, password= ?, permission = ? where id = ?", [$req['name'], $req['phone'], $req['email'], $hashed, $req['per'], $req['id']]);
+            } else {
+                DB::update("update " . $req->session()->get('uid') . "_staff set name = ?, phone = ?, email =? , permission = ? where id = ?", [$req['name'], $req['phone'], $req['email'], $req['per'], $req['id']]);
+            }
+            return redirect('/manage_users');
+        } else {
+            return "You are not permitted to update.";
+        }
     }
 }
