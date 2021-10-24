@@ -26,6 +26,8 @@ Route::get('visitors/{id}', [vendorController::class, "visitor"]);
 
 Route::get('/new_user', [vendorController::class, "new_user"]);
 Route::post("/post_new_user", [vendorController::class, "post_new_user"]);
+Route::view('/change_pass', 'change_pass');
+Route::post("/change_pass", [vendorController::class, "change_pass"]);
 
 Route::get('/manage_users', [vendorController::class, "manage_users"]);
 Route::get('users/{id}', [vendorController::class, "staff"]);

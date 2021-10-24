@@ -27,6 +27,19 @@ class vendorController extends Controller
         // $resu = DB::statement('SELECT * FROM ' . $uid . "_staff");
         return view("index", ['visitors' => $visitor, "info" => $req->session()]);
     }
+    function change_pass(Request $req)
+    {
+        if ($req['new'] != $req['r_new']) {
+            return redirect('/change_pass')->with('msg', "Passwords Dont Match");
+        }
+        $re = DB::table($req->session()->get('uid') . "_staff")->select("*")->where('id', "=", $req->session()->get('id'))->first();
+        if (!Hash::check($req['old'], $re->password)) {
+            return redirect('/change_pass')->with('msg', "Incorrect Password");
+        }
+        $hash = Hash::make($req['new']);
+        DB::update('update ' . $req->session()->get('uid') . '_staff set password = ? where id = ?', [$hash, $req->session()->get('id')]);
+        return redirect('/change_pass')->with('msg', "Password Changed");
+    }
     function login(Request $req)
     {
         if (isset($_GET['error'])) {
@@ -100,7 +113,7 @@ class vendorController extends Controller
         if (!Hash::check($req['password'], $result[0]->password)) {
             return redirect("/login?error=Wrong Password");
         }
-        session(['uid' => $rslt->id, 'utitle' => $rslt->name, 'per' => $result[0]->permission]);
+        session(['uid' => $rslt->id, 'utitle' => $rslt->name, 'per' => $result[0]->permission, "id" => $result[0]->id]);
         if ($result[0]->section_id == 0) {
             session(['section_id' => 0, 'section' => ""]);
         } else {

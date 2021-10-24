@@ -60,7 +60,10 @@
 						<a class="" href="/new_user"><i class="fas fa-plus"></i>Add New User</a>
 					</li>
 					<li id="">
-						<a class="" href="/manage_users"><i class="fas fa-plus"></i>Manage Users</a>
+						<a class="" href="/manage_users"><i class="fas fa-manage"></i>Manage Users</a>
+					</li>
+					<li id="">
+						<a class="" href="/change_pass"><i class="fas fa-change"></i>Change Password</a>
 					</li>
 					<li>
 						<a class="" href="/logout"><i class="fas fa-sign-out"></i>LogOut</a>
