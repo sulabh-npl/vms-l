@@ -20,6 +20,10 @@ Route::post("/logged", [vendorController::class, "logged"]);
 Route::get('/logout', [vendorController::class, "logout"]);
 Route::post("/otp", [vendorController::class, "otp"]);
 
+Route::get('delete_visitor/{id}', [vendorController::class, "visitor_delete"]);
+Route::post('update/visitor', [vendorController::class, "visitor_edit"]);
+Route::get('visitors/{id}', [vendorController::class, "visitor"]);
+
 Route::get('/new_user', [vendorController::class, "new_user"]);
 Route::post("/post_new_user", [vendorController::class, "post_new_user"]);
 

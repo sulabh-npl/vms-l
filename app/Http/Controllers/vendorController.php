@@ -20,9 +20,12 @@ class vendorController extends Controller
             return redirect("/login");
         }
         $uid = $req->session()->get('uid');
+        $staff = $uid . "_staff";
+        $vi = $uid . "_visitors";
         $result = DB::select("SELECT * FROM $uid" . "_visitors");
-        $resu = DB::statement('SELECT * FROM ' . $uid . "_staff");
-        return view("index", ['visitors' => $result, 'staffs' => $resu, "info" => $req->session()]);
+        $visitor = DB::table($staff)->join($vi, "$staff.id", "=", "$vi.addresser")->select("$vi.*", "$staff.name as stf_name")->get();
+        // $resu = DB::statement('SELECT * FROM ' . $uid . "_staff");
+        return view("index", ['visitors' => $visitor, "info" => $req->session()]);
     }
     function login(Request $req)
     {
@@ -51,6 +54,9 @@ class vendorController extends Controller
     }
     function manage_users(Request $req)
     {
+        if ($req->session()->get('access') != true) {
+            return redirect("/login");
+        }
         if ($req->session()->get('section_id') == 0) {
             $id = $req->session()->get('uid');
             $staff = $id . "_staff";
@@ -145,6 +151,37 @@ class vendorController extends Controller
             return redirect('/manage_users');
         } else {
             return "You are not permitted to update.";
+        }
+    }
+    function visitor($id, Request $req)
+    {
+        if ($req->session()->get('access') == true && $req->session()->get('per') != 2) {
+            $res = DB::select('select * from ' . $req->session()->get('uid') . '_visitors where id = ?', [$id]);
+            return json_encode($res);
+        } else {
+            return "You are not permitted to view.";
+        }
+    }
+    function visitor_edit(Request $req)
+    {
+        if ($req->session()->get('access') == true && $req->session()->get('per') != 2) {
+            if ($req['doc_type'] != "Citizenship") {
+                DB::update("update " . $req->session()->get('uid') . "_visitors set name = ?, area = ?, date = ?, time= ?, doc_type = ?, doc_id = ?, issue_date = ?, exp_date = ?, father_name = ? where id = ?", [$req['name'], $req['area'], $req['date'], $req['time'], $req['doc_type'], $req['doc_id'], $req['issue_date'], $req['exp_date'], $req['fname'], $req['id']]);
+            } else {
+                DB::update("update " . $req->session()->get('uid') . "_visitors set name = ?, area = ?, date = ?, time= ?, doc_type = ?, doc_id = ?, issue_date = ?, father_name = ? where id = ?", [$req['name'], $req['area'], $req['date'], $req['time'], "Citizenship", $req['doc_id'], $req['issue_date'], $req['fname'], $req['id']]);
+            }
+            return redirect('/');
+        } else {
+            return "You are not permitted to update.";
+        }
+    }
+    function visitor_delete($id, Request $req)
+    {
+        if ($req->session()->get('access') == true && $req->session()->get('per') != 2) {
+            DB::delete('delete from ' . $req->session()->get('uid') . '_visitors where id = ?', [$id]);
+            return redirect("/");
+        } else {
+            return "You are not permitted to delete.";
         }
     }
 }

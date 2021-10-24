@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="/node_css/bootstrap.min.css">
     <title>{{Session::get('utitle')}}</title>
         <!-- CSS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500&display=swap">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
         <link rel="stylesheet" href="assets/css/jquery.mCustomScrollbar.min.css">
@@ -25,6 +26,8 @@
 
 
         <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
         <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.css">
 
         <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script>
@@ -42,9 +45,6 @@
 					<i class="fas fa-arrow-left"></i>
 				</div>
 
-				<div class="logo">
-					<h3><a href="/">{{Session::get('utitle')}}</a></h3>
-				</div>
 
 				<ul class="list-unstyled menu-elements">
 					<li class="active">
@@ -54,7 +54,7 @@
 						<a class="" href="/#charts"><i class="fas fa-cog"></i> Charts</a>
 					</li>
 					<li>
-						<a class="" href="/#section-2"><i class="fas fa-user"></i>Tabulated Info</a>
+						<a class="" href="/#table"><i class="fas fa-user"></i>Tabulated Info</a>
 					</li>
 					<li id="new">
 						<a class="" href="/new_user"><i class="fas fa-plus"></i>Add New User</a>
@@ -97,12 +97,14 @@
 			        <div class="container">
 			            <div class="row">
 			                <div class="col col-md-10 offset-md-1 col-lg-8 offset-lg-2">
-			                	<h1 class="wow fadeIn">{{Session::get('utitle')}}</h1>
+			                	<h1 class="wow fadeIn">{{Session::get('utitle')}}@if (Session::get('section')!="")
+                                    ,{{Session::get('section')}}
+                                @endif</h1>
 			                	<div class="buttons wow fadeInUp">
-									<a class="btn btn-primary btn-customized scroll-link" href="#section-1" role="button">
+									<a class="btn btn-primary btn-customized" href="/#charts" role="button">
 										<i class="fa fa-area-chart" aria-hidden="true"></i> See Chart of visitors
 									</a>
-									<a class="btn btn-primary btn-customized-2 scroll-link" href="#section-2" role="button">
+									<a class="btn btn-primary btn-customized-2" href="/#table" role="button">
 										<i class="fas fa-table"></i> Tabulated Info
 									</a>
 								</div>
