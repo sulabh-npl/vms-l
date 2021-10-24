@@ -33,7 +33,7 @@
 	<div class="container">
 	  <div class="row">
 			<div class="col section-1 section-description wow fadeIn">
-			  <h2>View in detail</h2>
+			  <h2>Visitors Record</h2>
 			  <div class="divider-1 wow fadeInUp"><span></span></div>
 			</div>
 	  </div>
@@ -42,13 +42,15 @@
             <thead>
                 <tr>
                     <th>Name</th>
+                    @if (Session::get('section_id')==0)
                     <th>Visited Area</th>
+                    @endif
                     <th>Addressed By</th>
                     <th>Document Type</th>
                     <th>Document Id</th>
                     {{-- <th>Document Issue Date</th>
                     <th>Document Expiry Date</th> --}}
-                    <th>Father's Name</th>
+                    {{-- <th>Father's Name</th> --}}
                     <th>Visited At</th>
                     @if (Session::get('per')!=2)
                     <th>Edit/Delete</th>
@@ -59,7 +61,9 @@
                 @foreach($visitors as $vi)
                 <tr>
                     <td>{{$vi->name}}</td>
+                    @if (Session::get('section_id')==0)
                     <td>{{$vi->area}}</td>
+                    @endif
                     <td>{{$vi->stf_name}}</td>
                     <td>{{$vi->doc_type}}</td>
                     <td>{{$vi->doc_id}}</td>
@@ -68,7 +72,7 @@
                         Not Applicable
                     @endif
                     {{$vi->exp_date}}</td> --}}
-                    <td>{{$vi->father_name }}</td>
+                    {{-- <td>{{$vi->father_name }}</td> --}}
                     <td>{{$vi->date}}-{{$vi->time}}</td>
                     @if (Session::get('per')!=2)
                     <td><button onclick="edit({{$vi->id}})" class="btn btn-primary">Edit</button>
@@ -92,8 +96,6 @@
                 <input type="number" name="id" id="ID" hidden>
                 <label for="Name">Name: </label>
                 <input type="text" name="name" id="Name"><br>
-                <label for="Name">Visited Area: </label>
-                <input type="text" name="area" id="Area"><br>
                 <label for="Name">Visited Date: </label>
                 <input type="date" name="date" id="Date"><br>
                 <label for="Name">Visited Time: </label>

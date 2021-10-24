@@ -1,4 +1,4 @@
-@extends('super-admin')
+@extends('admin.super-admin')
 @section('content')
 <div id="main-page-content">
       <div class="container-fluid">

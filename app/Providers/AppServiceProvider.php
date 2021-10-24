@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -23,6 +25,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        view()->composer('*', function ($view) {
+            if (Session::has('uid')) {
+                $sec = DB::table(Session::get('uid') . "_sections")->select("*")->where('id', "!=", 0)->get();
+                view()->share('sections', $sec);
+            }
+        });
     }
 }

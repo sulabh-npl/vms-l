@@ -26,7 +26,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Boostrap Sidebar :: Text + Icon Menu</title>
-  <link rel="shortcut icon" href="assets/ico/favicon.png">
+  <link rel="shortcut icon" href="/assets/ico/favicon.png">
   <!-- Latest compiled and minified CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
   <!-- bootstrap jquery -->
@@ -41,7 +41,7 @@
   <!-- Latest compiled and minified JavaScript -->
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
   <!-- bootstrap sidebar stylesheet -->
-  <link href="assets/css/bootstrap-sidebar.min.css" rel="stylesheet">
+  <link href="/assets/css/bootstrap-sidebar.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" integrity="sha512-YWzhKL2whUzgiheMoBFwW8CKV4qpHQAEuvilg9FAn5VJUDwKZZxkJNuGM4XkWuk94WCrrwslk8yWNGmY1EduTA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
@@ -116,7 +116,7 @@
           <ul id="menu1" class="collapse">
             <li><a href="#">Users</a>
             </li>
-            <li><a href="list">Company List</a>
+            <li><a href="/admin/list">Company List</a>
             </li>
           </ul>
         </li>

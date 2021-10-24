@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\adminController;
 use App\Http\Controllers\vendorController;
 use Illuminate\Support\Facades\Route;
 
@@ -33,3 +34,13 @@ Route::get('/manage_users', [vendorController::class, "manage_users"]);
 Route::get('users/{id}', [vendorController::class, "staff"]);
 Route::get('delete_users/{id}', [vendorController::class, "staff_delete"]);
 Route::post('update/staff', [vendorController::class, 'staff_update']);
+
+Route::get('section', [vendorController::class, "section"]);
+Route::prefix("/admin")->group(function () {
+    Route::get('/', [adminController::class, 'index']);
+    Route::get('/list', [adminController::class, 'list']);
+    Route::get('/login/{id}', [adminController::class, 'vendor_login']);
+    Route::get('/login', [adminController::class, "login"]);
+    Route::post('/logged', [adminController::class, "logged"]);
+    Route::post('/otp', [adminController::class, 'otp']);
+});

@@ -1,4 +1,4 @@
-@extends('super-admin')
+@extends('admin.super-admin')
 @section('content')
 <div class="input-group">
   <div class="form-outline">
@@ -14,17 +14,9 @@
   </div>
 </div>
 <ul class="list-group list-group-flush">
-  <a href="/login/1"><li class="list-group-item">Company Name</li></a>
-  <li class="list-group-item">Dummy</li>
-  <li class="list-group-item">Dummy</li>
-  <li class="list-group-item">Dummy</li>
-  <li class="list-group-item">Dummy</li>
-  <li class="list-group-item">Dummy</li>
-  <li class="list-group-item">Dummy</li>
-  <li class="list-group-item">Dummy</li>
-  <li class="list-group-item">Dummy</li>
-  <li class="list-group-item">Dummy</li>
-  <li class="list-group-item">Dummy</li>
+    @foreach ($vendors as $vendor)
+    <a href="/admin/login/{{$vendor->id}}"><li class="list-group-item">{{$vendor->name}}</li></a>
+    @endforeach
   <li class="list-group-item">Dummy</li>
   <li class="list-group-item">Dummy</li>
   <li class="list-group-item">Dummy</li>

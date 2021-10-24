@@ -778,7 +778,7 @@ input.checkbox:checked:after {
 					<input class="email" type="text" name="email" placeholder="Email Address" required="">
 					<input class="password" type="text" name="password" placeholder="Password" required="">
                     <select  name="section_id">
-                        @foreach($sections as $section)
+                        @foreach($sections_user as $section)
                         <option value="{{$section->id}}">{{$section->name}}</option>
                         @endforeach
                     </select>

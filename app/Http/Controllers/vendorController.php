@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use DataTables;
 
+use function Complex\sec;
+
 class vendorController extends Controller
 {
     function index(Request $req)
@@ -23,7 +25,11 @@ class vendorController extends Controller
         $staff = $uid . "_staff";
         $vi = $uid . "_visitors";
         $result = DB::select("SELECT * FROM $uid" . "_visitors");
-        $visitor = DB::table($staff)->join($vi, "$staff.id", "=", "$vi.addresser")->select("$vi.*", "$staff.name as stf_name")->get();
+        if (Session::get('section_id') == 0) {
+            $visitor = DB::table($staff)->join($vi, "$staff.id", "=", "$vi.addresser")->join($uid . "_sections", "$staff.section_id", "=", $uid . "_sections.id")->select("$vi.*", "$staff.name as stf_name", $uid . "_sections.name as area")->get();
+        } else {
+            $visitor = DB::table($staff)->join($vi, "$staff.id", "=", "$vi.addresser")->join($uid . "_sections", "$staff.section_id", "=", $uid . "_sections.id")->select("$vi.*", "$staff.name as stf_name", $uid . "_sections.name as area")->where("$staff.section_id", "=", Session::get('section_id'))->get();
+        }
         // $resu = DB::statement('SELECT * FROM ' . $uid . "_staff");
         return view("index", ['visitors' => $visitor, "info" => $req->session()]);
     }
@@ -95,7 +101,7 @@ class vendorController extends Controller
         } else {
             $result = null;
         }
-        return view("new_user", ["sections" => $result, "msg" => $msg]);
+        return view("new_user", ["sections_user" => $result, "msg" => $msg]);
     }
 
     function otp(Request $req)
@@ -116,6 +122,8 @@ class vendorController extends Controller
         session(['uid' => $rslt->id, 'utitle' => $rslt->name, 'per' => $result[0]->permission, "id" => $result[0]->id]);
         if ($result[0]->section_id == 0) {
             session(['section_id' => 0, 'section' => ""]);
+            $sec = DB::table($id . "_sections")->select("*")->where('id', "!=", 0)->get();
+            session(['sections', $sec]);
         } else {
             $rlt = DB::select("SELECT * FROM $id" . "_sections WHERE id = ?", [$result[0]->section_id]);
             session(['section_id' => $rlt[0]->id, 'section' => "$rlt[0]->name"]);
@@ -133,6 +141,15 @@ class vendorController extends Controller
         // $hashed = Hash::make($req['password'], ['rounds' => 3]);
         DB::insert("insert into " . $req->session()->get('uid') . "_staff (name, phone, email, password, permission, section_id) VALUES (?,?,?,?,?,?)", [$req['name'], $req['phone'], $req['email'], $hashed, $req['per'], $req['section_id']]);
         return redirect('/new_user?msg=User added sucessfully');
+    }
+    function section()
+    {
+        $name = $_GET['name'];
+        $uid = Session::get('uid');
+        $staff = $uid . "_staff";
+        $vi = $uid . "_visitors";
+        $visitor = DB::table($staff)->join($vi, "$staff.id", "=", "$vi.addresser")->join($uid . "_sections", "$staff.section_id", "=", $uid . "_sections.id")->select("$vi.*", "$staff.name as stf_name", $uid . "_sections.name as area")->where($uid . "_sections.name", "=", $name)->get();
+        return view("section", ["visitors" => $visitor, "sec_name" => $name]);
     }
     function staff($id, Request $req)
     {
@@ -179,9 +196,9 @@ class vendorController extends Controller
     {
         if ($req->session()->get('access') == true && $req->session()->get('per') != 2) {
             if ($req['doc_type'] != "Citizenship") {
-                DB::update("update " . $req->session()->get('uid') . "_visitors set name = ?, area = ?, date = ?, time= ?, doc_type = ?, doc_id = ?, issue_date = ?, exp_date = ?, father_name = ? where id = ?", [$req['name'], $req['area'], $req['date'], $req['time'], $req['doc_type'], $req['doc_id'], $req['issue_date'], $req['exp_date'], $req['fname'], $req['id']]);
+                DB::update("update " . $req->session()->get('uid') . "_visitors set name = ?, date = ?, time= ?, doc_type = ?, doc_id = ?, issue_date = ?, exp_date = ?, father_name = ? where id = ?", [$req['name'], $req['date'], $req['time'], $req['doc_type'], $req['doc_id'], $req['issue_date'], $req['exp_date'], $req['fname'], $req['id']]);
             } else {
-                DB::update("update " . $req->session()->get('uid') . "_visitors set name = ?, area = ?, date = ?, time= ?, doc_type = ?, doc_id = ?, issue_date = ?, father_name = ? where id = ?", [$req['name'], $req['area'], $req['date'], $req['time'], "Citizenship", $req['doc_id'], $req['issue_date'], $req['fname'], $req['id']]);
+                DB::update("update " . $req->session()->get('uid') . "_visitors set name = ?, date = ?, time= ?, doc_type = ?, doc_id = ?, issue_date = ?, father_name = ? where id = ?", [$req['name'], $req['date'], $req['time'], "Citizenship", $req['doc_id'], $req['issue_date'], $req['fname'], $req['id']]);
             }
             return redirect('/');
         } else {
