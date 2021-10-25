@@ -133,6 +133,15 @@ h1 {
   letter-spacing: 4px;
   font-family: 'Roboto', sans-serif;
 }
+h2 {
+  font-size: 2em;
+  text-align: center;
+  color: rgb(35, 243, 8);
+  font-weight: 450;
+  text-transform: capitalize;
+  letter-spacing: 4px;
+  font-family: 'Roboto', sans-serif;
+}
 
 /*-- main --*/
 .main-w3layouts {
@@ -599,6 +608,10 @@ input.checkbox:checked:after {
   h1 {
     font-size: 2.2em;
   }
+
+  h2 {
+    font-size: 1.6em;
+  }
 }
 
 @media(max-width:736px) {
@@ -630,6 +643,10 @@ input.checkbox:checked:after {
     font-size: 2em;
     letter-spacing: 3px;
   }
+  h2 {
+    font-size: 1.5em;
+    letter-spacing: 3px;
+  }
 }
 
 @media(max-width:568px) {
@@ -648,6 +665,10 @@ input.checkbox:checked:after {
     letter-spacing: 3px;
   }
 
+  h2 {
+    font-size: 1.35em;
+    letter-spacing: 2px;
+  }
   .agileits-top {
     padding: 1.8em;
   }
@@ -664,6 +685,10 @@ input.checkbox:checked:after {
 @media(max-width:414px) {
   h1 {
     font-size: 1.8em;
+    letter-spacing: 2px;
+  }
+  h2 {
+    font-size: 1.35em;
     letter-spacing: 2px;
   }
 
@@ -737,6 +762,10 @@ input.checkbox:checked:after {
     font-size: 1.7em;
     letter-spacing: 0px;
   }
+  h2 {
+    font-size: 1.3em;
+    letter-spacing: 0px;
+  }
 
   .main-agileinfo {
     width: 92%;
@@ -767,7 +796,7 @@ input.checkbox:checked:after {
 }
 </style>
 <div class="main-w3layouts wrapper">
-    {{$msg}}
+    <h2><b>{{$msg}}</b></h2>
 		<h1>Add New User</h1>
 		<div class="main-agileinfo">
 			<div class="agileits-top">

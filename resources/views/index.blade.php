@@ -82,6 +82,24 @@
                 </tr>
                 @endforeach
             </tbody>
+            <tfoot>
+                <tr>
+                    <th>Name</th>
+                    @if (Session::get('section_id')==0)
+                    <th>Visited Area</th>
+                    @endif
+                    <th><input type="text" placeholder="Search Addresser" /></th>
+                    <th><input type="text" placeholder="Search Document Type" /></th>
+                    <th>Document Id</th>
+                    {{-- <th>Document Issue Date</th>
+                    <th>Document Expiry Date</th> --}}
+                    {{-- <th>Father's Name</th> --}}
+                    <th>Visited At</th>
+                    @if (Session::get('per')!=2)
+                    <th>Edit/Delete</th>
+                    @endif
+                </tr>
+            </tfoot>
         </table>
       </div>
     <div id="v2">
@@ -210,10 +228,25 @@
 </div>
 
 <script>
+// Setup - add a text input to each footer cell
 
-$(document).ready( function () {
-    $('#tab').DataTable();
-} );
+    // DataTable
+    var table = $('#tab').DataTable({
+        initComplete: function () {
+            // Apply the search
+            this.api().columns().every( function () {
+                var that = this;
+
+                $( 'input', this.footer() ).on( 'keyup change clear', function () {
+                    if ( that.search() !== this.value ) {
+                        that
+                            .search( this.value )
+                            .draw();
+                    }
+                } );
+            } );
+        }
+    });
 //Charts
   google.charts.load('current', {'packages':['corechart']});
       google.charts.setOnLoadCallback(drawChart);

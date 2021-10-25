@@ -33,6 +33,29 @@ class vendorController extends Controller
         // $resu = DB::statement('SELECT * FROM ' . $uid . "_staff");
         return view("index", ['visitors' => $visitor, "info" => $req->session()]);
     }
+    function add_section()
+    {
+        if (!session()->get('access') || session()->get('per') != 0) {
+            return redirect("/login?error=Login with permitted account");
+        }
+        if (isset($_GET['msg'])) {
+            $msg = $_GET['msg'];
+        } else {
+            $msg = "";
+        }
+        return view('addSection', ['msg' => $msg]);
+    }
+    function add_section_post(Request $req)
+    {
+        if (!session()->get('access') || session()->get('per') != 0) {
+            return redirect("/login?error=Login with permitted account");
+        }
+        DB::table(Session::get('uid') . "_sections")->insert([
+            'name' => $req['name']
+        ]);
+        return redirect('/addSection?msg=Section added sucessfully');
+    }
+
     function change_pass(Request $req)
     {
         if ($req['new'] != $req['r_new']) {
@@ -62,13 +85,22 @@ class vendorController extends Controller
             session(['access' => true]);
             return redirect("/");
         } else {
-            $req->session()->flush();
+            $req->session()->remove('uid');
+            $req->session()->remove('utitle');
+            $req->session()->remove('per');
+            $req->session()->remove('section_id');
+            $req->session()->remove('section');
             return redirect("/login?error=Wrong-OTP");
         }
     }
     function logout(Request $req)
     {
-        $req->session()->flush();
+        $req->session()->remove('access');
+        $req->session()->remove('uid');
+        $req->session()->remove('utitle');
+        $req->session()->remove('per');
+        $req->session()->remove('section_id');
+        $req->session()->remove('section');
         return redirect("/login");
     }
     function manage_users(Request $req)
@@ -82,6 +114,8 @@ class vendorController extends Controller
             $sections = $id . "_sections";
             $re = DB::table($sections)->join($staff, "$sections.id", "=", "$staff.section_id")->select("$staff.*", "$sections.name as sec_name")->get();
             // $re = DB::select("SELECT $staff.name, $staff.email, $staff.phone, $staff.permission, $sections.name FROM $staff INNER JOIN $sections ON $staff.section_id=$sections.id");
+        } else {
+            return redirect("/login?error=login with permtted account");
         }
         // $re = DB::select("SELECT * FROM " . $req->session()->get('uid') . "_staff");
         return view("manage_users", ["users" => $re]);
@@ -125,8 +159,10 @@ class vendorController extends Controller
             $sec = DB::table($id . "_sections")->select("*")->where('id', "!=", 0)->get();
             session(['sections', $sec]);
         } else {
-            $rlt = DB::select("SELECT * FROM $id" . "_sections WHERE id = ?", [$result[0]->section_id]);
-            session(['section_id' => $rlt[0]->id, 'section' => "$rlt[0]->name"]);
+            $result = $result[0];
+            $rlt = DB::table($id . "_sections")->where('id', "=", $result->section_id)->first();
+            // $rlt = DB::select("SELECT * FROM $id" . "_sections WHERE id = ?", ["$result[0]->section_id"]);
+            session(['section_id' => $rlt->id, 'section' => "$rlt->name"]);
         }
         $details = [
             "otp" => rand(100000, 999999)
@@ -210,6 +246,15 @@ class vendorController extends Controller
         if ($req->session()->get('access') == true && $req->session()->get('per') != 2) {
             DB::delete('delete from ' . $req->session()->get('uid') . '_visitors where id = ?', [$id]);
             return redirect("/");
+        } else {
+            return "You are not permitted to delete.";
+        }
+    }
+    function view_self(Request $req)
+    {
+        if ($req->session()->get('access') == true) {
+            $id = vendor::where('id', "=", $req->session()->get('uid'))->first();
+            return view("self", ["d" => $id]);
         } else {
             return "You are not permitted to delete.";
         }

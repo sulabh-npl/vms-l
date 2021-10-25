@@ -16,11 +16,11 @@ class visitorSeeder extends Seeder
     public function run()
     {
         $faker = Faker::create();
-        $arr = [2, 4, 8, 9];
+        $arr = [4, 5, 6];
         for ($i = 0; $i < 100; $i++) {
             DB::table('1_visitors')->insert([
                 'name' => $faker->name(),
-                'addresser' => $arr[array_rand($arr)],
+                'addresser' => $faker->randomElement($arr),
                 'date' => $faker->date(),
                 'time' => $faker->time(),
                 'doc_type' => $faker->randomElement(['Citizenship', 'Passport', 'Driving Lisense']),

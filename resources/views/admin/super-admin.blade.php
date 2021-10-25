@@ -25,13 +25,15 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Boostrap Sidebar :: Text + Icon Menu</title>
+  <title>Sevani</title>
   <link rel="shortcut icon" href="/assets/ico/favicon.png">
   <!-- Latest compiled and minified CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
   <!-- bootstrap jquery -->
-  <script src="https://code.jquery.com/jquery-latest.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/mark.js/8.6.0/jquery.mark.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.css">
+
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script>
   <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
   <!--[if lt IE 9]>
@@ -84,7 +86,7 @@
                 </li>
               </ul>
             </li>
-            <li><a href="#"><span class="glyphicon glyphicon-off" aria-hidden="true"></span></a>
+            <li><a href="/admin/logout"><span class="glyphicon glyphicon-off" aria-hidden="true"></span></a>
             </li>
           </ul>
         </div>
@@ -96,7 +98,7 @@
     <!-- Sidebar -->
     <div id="bootstrap-sidebar" class="light-theme text-menu">
       <ul class="sidebar-nav">
-        <li class="active"> <a href="#"><span class="glyphicon glyphicon-dashboard" aria-hidden="true"></span> <span class="menu-text">Home</span></a>
+        <li class="active"> <a href="/admin"><span class="glyphicon glyphicon-dashboard" aria-hidden="true"></span> <span class="menu-text">Home</span></a>
         </li>
         <li> <a href="#"><span class="glyphicon glyphicon-signal" aria-hidden="true"></span> <span class="menu-text">Charts</span></a>
         </li>
@@ -120,7 +122,7 @@
             </li>
           </ul>
         </li>
-        <li> <a href="#"><span class="glyphicon glyphicon-globe" aria-hidden="true"></span> <span class="menu-text">Add New</span></a>
+        <li> <a href="/admin/addVendor"><span class="glyphicon glyphicon-globe" aria-hidden="true"></span> <span class="menu-text">Add New Vendor</span></a>
         </li>
         <li> <a href="#"><span class="glyphicon glyphicon-credit-card" aria-hidden="true"></span> <span class="menu-text">Invoices</span></a>
         </li>
@@ -136,10 +138,16 @@
     </div>
     <!-- /#sidebar-wrapper -->
     <!-- Page Content -->
+
+    <div id="main-page-content">
+        <div class="container-fluid">
     @yield('content')
+
+</div>
+</div>
   <!-- /#wrapper -->
   <!-- Menu Toggle Script -->
-  <script src="assets/js/sidebar.js?ver=2"></script>
+  <script src="/assets/js/sidebar.js?ver=2"></script>
 </body>
 
 </html>

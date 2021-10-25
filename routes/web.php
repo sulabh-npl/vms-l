@@ -21,6 +21,9 @@ Route::post("/logged", [vendorController::class, "logged"]);
 Route::get('/logout', [vendorController::class, "logout"]);
 Route::post("/otp", [vendorController::class, "otp"]);
 
+Route::post("/addSection", [vendorController::class, "add_section_post"]);
+Route::get('/addSection', [vendorController::class, "add_section"]);
+
 Route::get('delete_visitor/{id}', [vendorController::class, "visitor_delete"]);
 Route::post('update/visitor', [vendorController::class, "visitor_edit"]);
 Route::get('visitors/{id}', [vendorController::class, "visitor"]);
@@ -36,11 +39,22 @@ Route::get('delete_users/{id}', [vendorController::class, "staff_delete"]);
 Route::post('update/staff', [vendorController::class, 'staff_update']);
 
 Route::get('section', [vendorController::class, "section"]);
+Route::get('details', [vendorController::class, "view_self"]);
 Route::prefix("/admin")->group(function () {
     Route::get('/', [adminController::class, 'index']);
+
+    Route::get('/addVendor', [adminController::class, 'add_vendor']);
+    Route::post('/addVendor', [adminController::class, 'add_vendor_post']);
+    Route::get('vendors/{id}', [adminController::class, "vendors"]);
+    Route::get('delete_vendor/{id}', [adminController::class, "vendor_delete"]);
+    Route::post('update_vendor', [adminController::class, 'vendor_update']);
+
     Route::get('/list', [adminController::class, 'list']);
+
     Route::get('/login/{id}', [adminController::class, 'vendor_login']);
+
     Route::get('/login', [adminController::class, "login"]);
+    Route::get('/logout', [adminController::class, "logout"]);
     Route::post('/logged', [adminController::class, "logged"]);
     Route::post('/otp', [adminController::class, 'otp']);
 });

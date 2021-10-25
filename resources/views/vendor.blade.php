@@ -56,8 +56,11 @@
 						<a class="" href="/#table"><i class="fas fa-user"></i>Tabulated Info</a>
 					</li>
                     @if(Session::get('section_id')==0)
+					<li id="new">
+						<a class="" href="/addSection"><i class="fas fa-plus"></i>Add New Section</a>
+					</li>
                     <li class="nav-item has-submenu">
-                        <a class="nav-link" href="#"> Sections  </a>
+                        <a class="nav-link" href="#"><i class="fa fa-list-alt" aria-hidden="true"></i> Sections  </a>
                         <ul class="submenu collapse">
                             @foreach($sections as $sec)
                             <li><a class="nav-link" href="/section?name={{$sec->name}}">{{$sec->name}}</a></li>
@@ -69,13 +72,16 @@
 						<a class="" href="/new_user"><i class="fas fa-plus"></i>Add New User</a>
 					</li>
 					<li id="">
-						<a class="" href="/manage_users"><i class="fas fa-manage"></i>Manage Users</a>
+						<a class="" href="/manage_users"><i class="far fa-address-card"></i>Manage Users</a>
 					</li>
 					<li id="">
-						<a class="" href="/change_pass"><i class="fas fa-change"></i>Change Password</a>
+						<a class="" href="/change_pass"><i class="fas fa-lock"></i>Change Password</a>
+					</li>
+					<li id="">
+						<a class="" href="/details#content"><i class="fas fa-info"></i>About</a>
 					</li>
 					<li>
-						<a class="" href="/logout"><i class="fas fa-sign-out"></i>LogOut</a>
+						<a class="" href="/logout"><i class="fas fa-sign-out-alt"></i>LogOut</a>
 					</li>
 				</ul>
 

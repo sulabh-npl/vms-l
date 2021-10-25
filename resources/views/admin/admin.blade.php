@@ -1,7 +1,5 @@
 @extends('admin.super-admin')
 @section('content')
-<div id="main-page-content">
-      <div class="container-fluid">
         <h1>Dashboard</h1>
         <div class="row">
                 <div class="col-sm-12">
@@ -129,8 +127,10 @@
                 <div class="col-md-4">
                   <div class="panel panel-primary">
                     <div class="panel-body text-center">
+                        <a href="/admin/addVendor">
                       <span class="glyphicon glyphicon-plus icon-big" aria-hidden="true"></span>
                       <h3>Add New Vendor</h3>
+                    </a>
                     </div>
                   </div>
                 </div>
@@ -180,6 +180,4 @@
         </div>
         <div style="clear:both"></div>
       </div>
-    </div>
-  </div>
   @endsection
