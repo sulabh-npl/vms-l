@@ -38,14 +38,14 @@
 			</div>
 	  </div>
       <div class="row">
-          <table id="tab" style="width: 100%">
+          <table id="tab" style="width: 110%;margin-left:-5%">
             <thead>
                 <tr>
                     <th>Name</th>
                     @if (Session::get('section_id')==0)
                     <th>Visited Area</th>
                     @endif
-                    <th>Addressed By</th>
+                    <th width="50">Addressed By</th>
                     <th>Document Type</th>
                     <th>Document Id</th>
                     {{-- <th>Document Issue Date</th>
@@ -64,7 +64,7 @@
                     @if (Session::get('section_id')==0)
                     <td>{{$vi->area}}</td>
                     @endif
-                    <td>{{$vi->stf_name}}</td>
+                    <td width="50px">{{$vi->stf_name}}</td>
                     <td>{{$vi->doc_type}}</td>
                     <td>{{$vi->doc_id}}</td>
                     {{-- <td>{{$vi->issue_date}}</td>
@@ -75,8 +75,8 @@
                     {{-- <td>{{$vi->father_name }}</td> --}}
                     <td>{{$vi->date}}-{{$vi->time}}</td>
                     @if (Session::get('per')!=2)
-                    <td><button onclick="edit({{$vi->id}})" class="btn btn-primary">Edit</button>
-                        <a href="/delete_visitor/{{$vi->id}}"><button class="btn btn-secondary">Delete</button></a>
+                    <td><button onclick="edit({{$vi->id}})" class="btn btn-primary" style="background-color:#FC7034;border:none">Edit</button>
+                        <a href="/delete_visitor/{{$vi->id}}"><button class="btn btn-secondary" style="border: none">Delete</button></a>
                         </td>
                     @endif
                 </tr>
@@ -88,7 +88,7 @@
                     @if (Session::get('section_id')==0)
                     <th>Visited Area</th>
                     @endif
-                    <th><input type="text" placeholder="Search Addresser" /></th>
+                    <th width="50px"><input width="50px" type="text" placeholder="Search Addresser" /></th>
                     <th><input type="text" placeholder="Search Document Type" /></th>
                     <th>Document Id</th>
                     {{-- <th>Document Issue Date</th>
@@ -144,7 +144,7 @@
                     $.get("/visitors/"+id, function(data, status){
                         var d = JSON.parse(data)[0];
                         document.getElementById("Name").value = d.name;
-                        document.getElementById("Area").value = d.area;
+                        // document.getElementById("Area").value = d.area;
                         document.getElementById("Date").value = d.date;
                         document.getElementById("Time").value = d.time;
                         document.getElementById("Doc_type").value = d.doc_type;

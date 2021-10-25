@@ -10,7 +10,7 @@
 	  </div>
 <div class="row">
     <div class="col-sm-12">
-    <table id="tab" style="width: 100%">
+    <table id="tab" style="width: 110%;margin-left: -5%">
       <thead>
           <tr>
               <th>Name</th>
@@ -41,8 +41,8 @@
               <td>{{$vi->father_name }}</td>
               <td>{{$vi->date}}-{{$vi->time}}</td>
               @if (Session::get('per')!=2)
-              <td><button onclick="edit({{$vi->id}})" class="btn btn-primary">Edit</button>
-                  <a href="/delete_visitor/{{$vi->id}}"><button class="btn btn-secondary">Delete</button></a>
+              <td><button onclick="edit({{$vi->id}})" class="btn btn-primary" style="background-color:#FC7034;border:none">Edit</button>
+                  <a href="/delete_visitor/{{$vi->id}}"><button class="btn btn-secondary" style="border: none">Delete</button></a>
                   </td>
               @endif
           </tr>

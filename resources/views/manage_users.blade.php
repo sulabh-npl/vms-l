@@ -71,8 +71,8 @@
                 @if (Session::get('section_id')==0)
                 <td>{{$user->sec_name}}</td>
                 @endif
-                <td><button onclick="User({{$user->id}})" class="btn btn-primary">Edit</button>
-                    <button type="button" onclick="del({{$user->id}})" class="btn btn-secondary">Delete</button>
+                <td><button onclick="User({{$user->id}})" class="btn btn-primary" style="background-color:#FC7034;border:none">Edit</button>
+                    <button type="button" onclick="del({{$user->id}})" class="btn btn-secondary" style="border: none">Delete</button>
                 </td>
             </tr>
             @endforeach
