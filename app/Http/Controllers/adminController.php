@@ -73,7 +73,15 @@ class adminController extends Controller
         DB::statement("CREATE TABLE $d->id" . "_visitors (
             id int NOT NULL AUTO_INCREMENT,
             name text,
-            addresser int,
+            name_ch text,
+            sex text,
+            dob date,
+            phone text,
+            address text,
+            purpose text,
+            section_name text,
+            addresser text,
+            addresser_id int,
             date date,
             time time,
             doc_type text,
@@ -111,10 +119,11 @@ class adminController extends Controller
     {
         if (Hash::check($req['otp'], $req->session()->get('admin_otp'))) {
             session(['admin-access' => true]);
+            // $req->session()->forget('otp');
             return redirect("/admin");
         } else {
-            $req->session()->flush();
-            return redirect("/admin/login?error=Wrong-OTP");
+            // $req->session()->flush();
+            return redirect("/admin/otp?error=Wrong-OTP");
         }
     }
     function login()
@@ -146,6 +155,14 @@ class adminController extends Controller
         session(['admin_otp' => Hash::make($details['otp']), 'admin-per' => $re->permission]);
         Mail::to($req['email'])->send(new loginMail($details));
         return view('admin.otp');
+    }
+    function otp_get()
+    {
+        if (Session::get('otp')) {
+            return view('admin.otp', ["msg" => $_GET['error']]);
+        } else {
+            return redirect('/admin/login');
+        }
     }
     function vendor_login($id)
     {

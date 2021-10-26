@@ -318,15 +318,12 @@
       <!-- Login Form -->
       <form action="/admin/logged" method="POST">
         @csrf
+        <label for="error" style="color: red;"><b>{{$msg}}</b></label><br>
         <label for="OTP">Enter The OTP from your Mail</label>
         <input type="number" id="password" class="fadeIn third form-control" name="otp" placeholder="otp">
         <input type="submit" class="fadeIn fourth" value="Log In">
       </form>
 
-      <!-- Remind Passowrd -->
-      <div id="formFooter">
-        <a class="underlineHover" href="#">Forgot Password?</a>
-      </div>
 
     </div>
   </div>

@@ -4,6 +4,10 @@
 <style>.fe{
  display: none;
 }
+.custom{
+    margin: 15px;
+    width: 30%;
+}
 </style>
             <!-- Section 1 -->
 <div class="section-1-container section-container" id="charts">
@@ -35,6 +39,26 @@
 			<div class="col section-1 section-description wow fadeIn">
 			  <h2>Visitors Record</h2>
 			  <div class="divider-1 wow fadeInUp"><span></span></div>
+              <div class="input-group">
+                <div class="form-outline custom">
+                  <input type="search" id="form0" data="0" placeholder="Search By Name" class="form-control column-filter" />
+                </div>
+                <div class="form-outline custom">
+                  <input type="search" id="form1" data="1" placeholder="Search By Gender" class="form-control column-filter" />
+                </div>
+                <div class="form-outline custom">
+                  <input type="search" id="form3" data="3" placeholder="Search By Addresser" class="form-control column-filter" />
+                </div>
+                <div class="form-outline custom">
+                  <input type="search" id="form4" data="4" placeholder="Search By Document Type" class="column-filter form-control" />
+                </div>
+                <div class="form-outline custom">
+                  <input type="search" id="form5" data="5" placeholder="Search By Document Id" class="form-control column-filter" />
+                </div>
+                <div class="form-outline custom">
+                  <input type="search" id="form6" data="6" placeholder="Search By Visited Date time" class="form-control column-filter" />
+                </div>
+              </div>
 			</div>
 	  </div>
       <div class="row">
@@ -42,9 +66,10 @@
             <thead>
                 <tr>
                     <th>Name</th>
-                    @if (Session::get('section_id')==0)
+                    <th>Gender</th>
+                    {{-- @if (Session::get('section_id')==0) --}}
                     <th>Visited Area</th>
-                    @endif
+                    {{-- @endif --}}
                     <th width="50">Addressed By</th>
                     <th>Document Type</th>
                     <th>Document Id</th>
@@ -52,8 +77,9 @@
                     <th>Document Expiry Date</th> --}}
                     {{-- <th>Father's Name</th> --}}
                     <th>Visited At</th>
+                    <th>View in detail</th>
                     @if (Session::get('per')!=2)
-                    <th>Edit/Delete</th>
+                    {{-- <th>Edit/Delete</th> --}}
                     @endif
                 </tr>
             </thead>
@@ -61,10 +87,11 @@
                 @foreach($visitors as $vi)
                 <tr>
                     <td>{{$vi->name}}</td>
-                    @if (Session::get('section_id')==0)
-                    <td>{{$vi->area}}</td>
-                    @endif
-                    <td width="50px">{{$vi->stf_name}}</td>
+                    <td>{{$vi->sex}}</td>
+                    {{-- @if (Session::get('section_id')==0) --}}
+                    <td>{{$vi->section_name}}</td>
+                    {{-- @endif --}}
+                    <td width="50px">{{$vi->addresser}}</td>
                     <td>{{$vi->doc_type}}</td>
                     <td>{{$vi->doc_id}}</td>
                     {{-- <td>{{$vi->issue_date}}</td>
@@ -73,33 +100,16 @@
                     @endif
                     {{$vi->exp_date}}</td> --}}
                     {{-- <td>{{$vi->father_name }}</td> --}}
-                    <td>{{$vi->date}}-{{$vi->time}}</td>
-                    @if (Session::get('per')!=2)
+                    <td>{{$vi->date}} {{$vi->time}}</td>
+                    <td><button onclick="View({{$vi->id}})" class="btn btn-primary" style="background-color:#FC7034;border:none">View</button></td>
+                    {{-- @if (Session::get('per')!=2)
                     <td><button onclick="edit({{$vi->id}})" class="btn btn-primary" style="background-color:#FC7034;border:none">Edit</button>
                         <a href="/delete_visitor/{{$vi->id}}"><button class="btn btn-secondary" style="border: none">Delete</button></a>
                         </td>
-                    @endif
+                    @endif --}}
                 </tr>
                 @endforeach
             </tbody>
-            <tfoot>
-                <tr>
-                    <th>Name</th>
-                    @if (Session::get('section_id')==0)
-                    <th>Visited Area</th>
-                    @endif
-                    <th width="50px"><input width="50px" type="text" placeholder="Search Addresser" /></th>
-                    <th><input type="text" placeholder="Search Document Type" /></th>
-                    <th>Document Id</th>
-                    {{-- <th>Document Issue Date</th>
-                    <th>Document Expiry Date</th> --}}
-                    {{-- <th>Father's Name</th> --}}
-                    <th>Visited At</th>
-                    @if (Session::get('per')!=2)
-                    <th>Edit/Delete</th>
-                    @endif
-                </tr>
-            </tfoot>
         </table>
       </div>
     <div id="v2">
@@ -108,7 +118,27 @@
             <!-- Modal content -->
             <div class="modal-content">
               <span class="close">&times;</span>
-              <p><form action="/update/visitor" method="POST">
+              <p>
+                  <b>Name: </b><span id="Name"></span><br>
+                  <b>Name in Chinese: </b><span id="Name_ch"></span><br>
+                  <b>Gender: </b><span id="Sex"></span><br>
+                  <b>Father's Name: </b><span id="Fname"></span><br>
+                  <b>Document Type: </b><span id="Doc_type"></span><br>
+                  <b>Document Id: </b><span id="Doc_id"></span><br>
+                  <b>Expiry Date: </b><span id="Exp_date"></span><br>
+                  <b>Issued Date: </b><span id="Issue_date"></span><br>
+                  <b>Date Of Birth: </b><span id="DOB"></span><br>
+                  <br>
+                  <b>Phone: </b><span id="Phone"></span><br>
+                  <b>Address: </b><span id="Address"></span><br>
+                  <br>
+                  <b>Addressed By: </b><span id="Addresser"></span><br>
+                  <b>Visited Area: </b><span id="Section_name"></span><br>
+                  <b>Visited at: </b><span id="Date_time"></span><br>
+                  <br>
+                  <b>Purpose of visit</b><br>
+                  <span id="Purpose"></span>
+                  {{-- <form action="/update/visitor" method="POST">
                 <b>Visitor Detail</b><br>
                 @csrf
                 <input type="number" name="id" id="ID" hidden>
@@ -128,7 +158,8 @@
                 <label for="Permission">Father's Name: </label>
                 <input type="text" name="fname" placeholder="" id="Fname"><br>
                 <button class="btn btn-primary">Save</button>
-            </form></p>
+            </form> --}}
+            </p>
             </div>
 
           </div>
@@ -139,25 +170,37 @@
                 // Get the <span> element that closes the modal
                 var span = document.getElementsByClassName("close")[0];
 
+                // function View(id){
+                //     alert(id);
+
+                //     modal.style.display = "block";
+                // }
                 // When the user clicks the button, open the modal
-                function edit(id) {
+                function View(id) {
                     $.get("/visitors/"+id, function(data, status){
                         var d = JSON.parse(data)[0];
-                        document.getElementById("Name").value = d.name;
-                        // document.getElementById("Area").value = d.area;
-                        document.getElementById("Date").value = d.date;
-                        document.getElementById("Time").value = d.time;
-                        document.getElementById("Doc_type").value = d.doc_type;
-                        document.getElementById("Doc_id").value = d.doc_id;
-                        document.getElementById("Fname").value = d.father_name;
-                        document.getElementById("Issue_date").value = d.issue_date;
-                        document.getElementById("ID").value = id;
+                        document.getElementById("Name").innerHTML = d.name;
+                        document.getElementById("Name_ch").innerHTML = d.name_ch;
+                        document.getElementById("Sex").innerHTML = d.sex;
+                        document.getElementById("Fname").innerHTML = d.father_name;
+                        document.getElementById("Doc_type").innerHTML = d.doc_type;
+                        document.getElementById("Doc_id").innerHTML = d.doc_id;
+                        document.getElementById("Issue_date").innerHTML = d.issue_date;
                         if(d.doc_type != "Citizenship"){
-                            document.getElementById("exp").innerHTML=`
-                                <label for="Name">Expiry Date: </label>
-                                <input type="date" name="exp_date" placeholder="" value="${d.exp_date}"><br>
-                            `;
+                            document.getElementById("Exp_date").innerHTML=d.exp_date;
+                        }else{
+                            document.getElementById("Exp_date").innerHTML="Not Applicable";
                         }
+                        document.getElementById("DOB").innerHTML = d.dob;
+
+                        document.getElementById("Phone").innerHTML = d.phone;
+                        document.getElementById("Address").innerHTML = d.address;
+
+                        document.getElementById("Addresser").innerHTML = d.addresser;
+                        document.getElementById("Section_name").innerHTML = d.section_name;
+                        document.getElementById("Date_time").innerHTML = d.date+" "+d.time;
+
+                        document.getElementById("Purpose").innerHTML = d.purpose;
                     });
                     // console.log(data);
                   modal.style.display = "block";
@@ -176,12 +219,10 @@
                 }
                 </script>
 
-              <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
-            <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/handsontable/dist/moment/moment.js"></script>
-            <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/handsontable/dist/pickday/pickday.js"></script>
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css" />
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/pikaday/css/pikaday.css">
             <style>
+                .dataTables_filter {
+                    display: none;
+                }
                 .modal {
               display: none; /* Hidden by default */
               position: fixed; /* Stay in place */
@@ -220,33 +261,35 @@
               cursor: pointer;
             }
             </style>
-
-
-
     </div>
 	</div>
 </div>
 
 <script>
 // Setup - add a text input to each footer cell
-
+var yourDate = new Date()
+yourDate = yourDate.toISOString().split('T')[0];
     // DataTable
-    var table = $('#tab').DataTable({
-        initComplete: function () {
-            // Apply the search
-            this.api().columns().every( function () {
-                var that = this;
+    function filterColumn ( i ) {
+        $('#tab').DataTable().column( i ).search(
+            $('#form'+i).val()
+        ).draw();
+    }
+    function defaultColumn () {
+        $('#tab').DataTable({order: [6,"desc"]});
+        // $('#tab').DataTable({order: [6,"desc"]}).column(6).search(
+        //     yourDate
+        // ).draw();
+    }
+    defaultColumn();
+    filterColumn(0);
+    window.onload = function() {
+        $('input.column-filter').on( 'keyup click', function () {
+            // alert($('#form'+ $(this).attr('data')).val() )
+            filterColumn( $(this).attr('data') );
+        } );
 
-                $( 'input', this.footer() ).on( 'keyup change clear', function () {
-                    if ( that.search() !== this.value ) {
-                        that
-                            .search( this.value )
-                            .draw();
-                    }
-                } );
-            } );
-        }
-    });
+    }
 //Charts
   google.charts.load('current', {'packages':['corechart']});
       google.charts.setOnLoadCallback(drawChart);
@@ -302,5 +345,5 @@
         chart.draw(combo, options);
       }
 </script>
-
+@yield("profile")
 @endsection

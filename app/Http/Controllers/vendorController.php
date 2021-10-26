@@ -24,11 +24,10 @@ class vendorController extends Controller
         $uid = $req->session()->get('uid');
         $staff = $uid . "_staff";
         $vi = $uid . "_visitors";
-        $result = DB::select("SELECT * FROM $uid" . "_visitors");
         if (Session::get('section_id') == 0) {
-            $visitor = DB::table($staff)->join($vi, "$staff.id", "=", "$vi.addresser")->join($uid . "_sections", "$staff.section_id", "=", $uid . "_sections.id")->select("$vi.*", "$staff.name as stf_name", $uid . "_sections.name as area")->get();
+            $visitor = DB::table($vi)->get();
         } else {
-            $visitor = DB::table($staff)->join($vi, "$staff.id", "=", "$vi.addresser")->join($uid . "_sections", "$staff.section_id", "=", $uid . "_sections.id")->select("$vi.*", "$staff.name as stf_name", $uid . "_sections.name as area")->where("$staff.section_id", "=", Session::get('section_id'))->get();
+            $visitor = DB::table($vi)->where("$vi.section_id", "=", Session::get('section_id'))->get();
         }
         // $resu = DB::statement('SELECT * FROM ' . $uid . "_staff");
         return view("index", ['visitors' => $visitor, "info" => $req->session()]);
@@ -85,12 +84,12 @@ class vendorController extends Controller
             session(['access' => true]);
             return redirect("/");
         } else {
-            $req->session()->remove('uid');
-            $req->session()->remove('utitle');
-            $req->session()->remove('per');
-            $req->session()->remove('section_id');
-            $req->session()->remove('section');
-            return redirect("/login?error=Wrong-OTP");
+            // $req->session()->remove('uid');
+            // $req->session()->remove('utitle');
+            // $req->session()->remove('per');
+            // $req->session()->remove('section_id');
+            // $req->session()->remove('section');
+            return redirect("/otp?error=Wrong-OTP");
         }
     }
     function logout(Request $req)
@@ -99,6 +98,7 @@ class vendorController extends Controller
         $req->session()->remove('uid');
         $req->session()->remove('utitle');
         $req->session()->remove('per');
+        $req->session()->remove('otp');
         $req->session()->remove('section_id');
         $req->session()->remove('section');
         return redirect("/login");
@@ -153,7 +153,7 @@ class vendorController extends Controller
         if (!Hash::check($req['password'], $result[0]->password)) {
             return redirect("/login?error=Wrong Password");
         }
-        session(['uid' => $rslt->id, 'utitle' => $rslt->name, 'per' => $result[0]->permission, "id" => $result[0]->id]);
+        session(['uid' => $rslt->id, 'name' => $result[0]->name, 'utitle' => $rslt->name, 'per' => $result[0]->permission, "id" => $result[0]->id]);
         if ($result[0]->section_id == 0) {
             session(['section_id' => 0, 'section' => ""]);
             $sec = DB::table($id . "_sections")->select("*")->where('id', "!=", 0)->get();
@@ -169,7 +169,15 @@ class vendorController extends Controller
         ];
         session(['otp' => Hash::make($details['otp'])]);
         Mail::to($req['uname'])->send(new loginMail($details));
-        return view('otp');
+        return view('otp', ["msg" => ""]);
+    }
+    function otp_get()
+    {
+        if (Session::get('otp')) {
+            return view('otp', ["msg" => $_GET['error']]);
+        } else {
+            return redirect('/login');
+        }
     }
     function post_new_user(Request $req)
     {
@@ -182,9 +190,9 @@ class vendorController extends Controller
     {
         $name = $_GET['name'];
         $uid = Session::get('uid');
-        $staff = $uid . "_staff";
+        // $staff = $uid . "_staff";
         $vi = $uid . "_visitors";
-        $visitor = DB::table($staff)->join($vi, "$staff.id", "=", "$vi.addresser")->join($uid . "_sections", "$staff.section_id", "=", $uid . "_sections.id")->select("$vi.*", "$staff.name as stf_name", $uid . "_sections.name as area")->where($uid . "_sections.name", "=", $name)->get();
+        $visitor = DB::table($vi)->where($vi . ".section_name", "=", $name)->get();
         return view("section", ["visitors" => $visitor, "sec_name" => $name]);
     }
     function staff($id, Request $req)
@@ -219,9 +227,14 @@ class vendorController extends Controller
             return "You are not permitted to update.";
         }
     }
+    function user()
+    {
+        $v = DB::table(Session::get('uid') . '_staff')->where('id', '=', Session::get('id'))->first();
+        return view("user", ["v" => $v]);
+    }
     function visitor($id, Request $req)
     {
-        if ($req->session()->get('access') == true && $req->session()->get('per') != 2) {
+        if ($req->session()->get('access') == true) {
             $res = DB::select('select * from ' . $req->session()->get('uid') . '_visitors where id = ?', [$id]);
             return json_encode($res);
         } else {

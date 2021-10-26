@@ -19,6 +19,7 @@ Route::get('/', [vendorController::class, "index"]);
 Route::get('/login', [vendorController::class, "login"]);
 Route::post("/logged", [vendorController::class, "logged"]);
 Route::get('/logout', [vendorController::class, "logout"]);
+Route::get('/otp', [vendorController::class, 'otp_get']);
 Route::post("/otp", [vendorController::class, "otp"]);
 
 Route::post("/addSection", [vendorController::class, "add_section_post"]);
@@ -29,6 +30,7 @@ Route::post('update/visitor', [vendorController::class, "visitor_edit"]);
 Route::get('visitors/{id}', [vendorController::class, "visitor"]);
 
 Route::get('/new_user', [vendorController::class, "new_user"]);
+Route::get('/user', [vendorController::class, "user"]);
 Route::post("/post_new_user", [vendorController::class, "post_new_user"]);
 Route::view('/change_pass', 'change_pass');
 Route::post("/change_pass", [vendorController::class, "change_pass"]);
@@ -57,4 +59,5 @@ Route::prefix("/admin")->group(function () {
     Route::get('/logout', [adminController::class, "logout"]);
     Route::post('/logged', [adminController::class, "logged"]);
     Route::post('/otp', [adminController::class, 'otp']);
+    Route::get('/otp', [adminController::class, 'otp_get']);
 });
