@@ -1,5 +1,8 @@
 @extends("vendor")
 @section('content')
+<link rel="stylesheet" href="//code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="/resources/demos/style.css">
+  <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
 
 <style>.fe{
     display: none;
@@ -8,7 +11,9 @@
        margin: 15px;
        width: 30%;
    }
-
+   #dialog{
+       display: none;
+   }
    .dataTables_filter {
        display: none;
    }
@@ -50,6 +55,21 @@
               cursor: pointer;
             }
    </style>
+   <h1>{{$_GET['name']}}</h1>
+    @if(Session::get('per')==0)
+   <form action="/rename?name={{$_GET['name']}}" id="f" method="post">
+    @csrf
+    <input type="text" id="act" name="act" style="display: none">
+    <label for="">To Rename Section</label>
+    <input type="text" name="re_name" id="r" placeholder="Enter New Name for section" class="form-control" style="margin-left: auto; margin-right:auto;width:50%" />
+    <button type="button" class="btn btn-primary" id="re" onclick="rename()">Rename</button><button type="button" onclick="del()" class="btn btn-secondary">Delete</button>
+</form>
+@endif
+<div id="dialog" title="Basic dialog">
+    <p>Do you want to make changes in Previos Data Also?</p>
+    <button class="btn btn-primary" id="sub" data="1">Yes</button>
+    <button class="btn btn-secondary" id="sub" data="0">No</button>
+  </div>
 <div class="section-2-container section-container" id="table">
 	<div class="container">
 	  <div class="row">
@@ -260,7 +280,27 @@ yourDate = yourDate.toISOString().split('T')[0];
         } );
 
     }
-
+function del() {
+    var re = confirm("Are you sure that you want to delete this section");
+    if(re == true){
+        window.location.replace("/delete_sec/{{$_GET['name']}}");
+    }
+}
+$("#re").attr('disabled','true')
+$("#r").keyup(function () {
+    if($(this).val !=""){
+        $("#re").removeAttr('disabled')
+    }else{
+        $("#re").attr('disabled','true')
+    }
+})
+$('#dialog button').click(function(){
+    $('#act').val($(this).attr('data'))
+    $("#f").submit();
+})
+function rename() {
+    $( "#dialog" ).attr("title", "What's Next?").dialog();
+}
                 </script>
     </div>
 </div>

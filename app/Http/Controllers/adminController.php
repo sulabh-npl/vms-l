@@ -92,6 +92,9 @@ class adminController extends Controller
             PRIMARY KEY(id)
         )");
         DB::table($d->id . '_sections')->insert([
+            'name' => 'Un-assigined'
+        ]);
+        DB::table($d->id . '_sections')->insert([
             'id' => 0,
             'name' => 'Main'
         ]);

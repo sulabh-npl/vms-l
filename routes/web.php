@@ -23,7 +23,9 @@ Route::get('/otp', [vendorController::class, 'otp_get']);
 Route::post("/otp", [vendorController::class, "otp"]);
 
 Route::post("/addSection", [vendorController::class, "add_section_post"]);
+Route::post("/rename", [vendorController::class, "section_rename"]);
 Route::get('/addSection', [vendorController::class, "add_section"]);
+Route::get('/delete_sec/{name}', [vendorController::class, "section_del"]);
 
 Route::get('delete_visitor/{id}', [vendorController::class, "visitor_delete"]);
 Route::post('update/visitor', [vendorController::class, "visitor_edit"]);

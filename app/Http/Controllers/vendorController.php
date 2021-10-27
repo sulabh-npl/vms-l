@@ -195,6 +195,33 @@ class vendorController extends Controller
         $visitor = DB::table($vi)->where($vi . ".section_name", "=", $name)->get();
         return view("section", ["visitors" => $visitor, "sec_name" => $name]);
     }
+    function section_rename(Request $req)
+    {
+        $name = $_GET['name'];
+        $uid = Session::get('uid');
+        // $staff = $uid . "_staff";
+        $vi = $uid . "_visitors";
+        if ($req->act == "1") {
+            DB::update('update ' . $vi . ' set section_name = ? where section_name = ?', [$req->re_name, $name]);
+        }
+        DB::update('update ' . $uid . '_sections set name = ? where name = ?', [$req->re_name, $name]);
+        return redirect('/section?name=' . $req->re_name);
+    }
+    function section_del($name)
+    {
+        if (!Session::get('access')) {
+            return redirect("/login");
+        }
+        $id = DB::table(Session::get('uid') . '_sections')->where('name', $name)->first();
+        if ($id == null) {
+            return "Don't Update URL";
+        }
+        $id = $id->id;
+        DB::delete('DELETE FROM ' . Session::get('uid') . '_sections WHERE name = ?', [$name]);
+        DB::update('update users set section_id = 1 where section_id = ?', [$id]);
+        // DB::update('update ' .  . '_sections set name = ? where name = ?', [$req->re_name, $name]);
+        return redirect('/');
+    }
     function staff($id, Request $req)
     {
         if ($req->session()->get('access') == true && $req->session()->get('per') == 0) {
