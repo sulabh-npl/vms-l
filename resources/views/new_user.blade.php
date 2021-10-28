@@ -1,6 +1,7 @@
 @extends('vendor')
 @section('content')
-
+{{-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous"> --}}
+{{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script> --}}
 <style>
     /*--
 Author: Colorlib
@@ -8,18 +9,49 @@ Author URL: https://colorlib.com
 License: Creative Commons Attribution 3.0 Unported
 License URL: http://creativecommons.org/licenses/by/3.0/
 --*/
-/*-- reset --*/
-html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, dl, dt, dd, ol, nav ul, nav li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
-  margin: 0;
-  padding: 0;
+select {
+  /* Reset Select */
+  appearance: none;
+  outline: 0;
   border: 0;
-  font-size: 100%;
-  font: inherit;
-  vertical-align: baseline;
+  box-shadow: none;
+  /* Personalize */
+  flex: 1;
+  padding: 0 1em;
+  color: #fff;
+  background-color: #ec7d15;
+  background-image: none;
+  cursor: pointer;
 }
-
-article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
-  display: block;
+/* Remove IE arrow */
+select::-ms-expand {
+  display: none;
+}
+/* Custom Select wrapper */
+.select {
+  position: relative;
+  display: flex;
+  width: 94.5%;
+  height: 3em;
+  border-radius: .25em;
+  overflow: hidden;
+}
+/* Arrow */
+.select::after {
+  content: '\25BC';
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: auto;
+  border: #f39c12 solid 2px;
+  display: none;
+  background-color: #ec7d15;
+  transition: .25s all ease;
+  pointer-events: none;
+}
+/* Transition */
+.select:hover::after {
+  color: #f39c12;
 }
 
 ol, ul {
@@ -802,23 +834,61 @@ input.checkbox:checked:after {
 			<div class="agileits-top">
 				<form action="/post_new_user" method="POST">
                     @csrf
-					<input class="text" type="text" name="name" placeholder="Name" required="">
-					<input class="text" type="text" name="phone" placeholder="Phone Number" required="">
-					<input class="email" type="text" name="email" placeholder="Email Address" required="">
-					<input class="password" type="text" name="password" placeholder="Password" required="">
-                    <select  name="section_id">
+					<input class="email" type="text" name="name" placeholder="Name" required="">
+					<input class="email" type="text" name="phone" placeholder="Phone Number" required="">
+					<input class="email" type="email" name="email" placeholder="Email Address" required="">
+					<input class="password" type="password" name="password" placeholder="Password" required=""><br>
+					<input class="password" type="password" name="re_pass" placeholder="Repeat Password" required=""><br>
+                    @if($type)
+                    <div class="select">
+                    <select class="form-select" style="width: 94.5%" aria-label="Default select example" name="section_id">
+                        <option value="-1" selected>Select Section</option>
                         @foreach($sections_user as $section)
                         <option value="{{$section->id}}">{{$section->name}}</option>
                         @endforeach
                     </select>
-                    <select  name="per">
+                    </div><br>
+                    @endif
+                    <div class="select">
+                    <select class="form-select" style="width: 94.5%" aria-label="Default select example" name="per">
+                        <option value="-1" selected>Select Permission</option>
                         <option value="0">Admin</option>
                         <option value="1">Editor</option>
                         <option value="2">Viewer</option>
-                    </select>
+                    </select></div>
 					<input type="submit" value="Register">
 				</form>
 			</div>
 		</div>
 	</div>
+    <script>
+
+        $('input[type="submit"]').click(function(){
+            if($('input[name="name"]').val() == ""){
+                alert("Enter Name");
+            }else if ($('input[name="phone"]').val() == ""){
+                alert("Enter phone number");
+            }else if ($('input[name="email"]').val() == ""){
+                alert("Enter email");
+            }else if ($('input[name="password"]').val() == ""){
+                alert("Enter Password");
+            }else if($('input[name="password"]').val() != $('input[name="re_pass"]').val() ){
+                alert("Password's Don't Match");
+            }else if($('select[name="per"]').val() == -1){
+                alert("Give apporiate Permission");
+            @if($type)
+            }else if($('select[name="section_id"]').val() == -1){
+                alert("Select Section");
+            @endif
+            }else{
+                $('form').submit();
+            }
+        });
+        $('select[name="section_id"]').keyup(function(){
+            if(this.val() != "-1"){
+        $('input[type="submit"]').removeAttr('disabled');
+            }
+        });
+
+    </script>
     @endsection

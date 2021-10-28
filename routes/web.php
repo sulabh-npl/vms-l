@@ -27,7 +27,7 @@ Route::post("/rename", [vendorController::class, "section_rename"]);
 Route::get('/addSection', [vendorController::class, "add_section"]);
 Route::get('/delete_sec/{name}', [vendorController::class, "section_del"]);
 
-Route::get('delete_visitor/{id}', [vendorController::class, "visitor_delete"]);
+Route::post('delete_visitor/{id}', [vendorController::class, "visitor_delete"]);
 Route::post('update/visitor', [vendorController::class, "visitor_edit"]);
 Route::get('visitors/{id}', [vendorController::class, "visitor"]);
 
@@ -39,8 +39,9 @@ Route::post("/change_pass", [vendorController::class, "change_pass"]);
 
 Route::get('/manage_users', [vendorController::class, "manage_users"]);
 Route::get('users/{id}', [vendorController::class, "staff"]);
-Route::get('delete_users/{id}', [vendorController::class, "staff_delete"]);
+Route::post('delete_user/{id}', [vendorController::class, "staff_delete"]);
 Route::post('update/staff', [vendorController::class, 'staff_update']);
+Route::post('reset/staff', [vendorController::class, 'staff_reset']);
 
 Route::get('section', [vendorController::class, "section"]);
 Route::get('details', [vendorController::class, "view_self"]);

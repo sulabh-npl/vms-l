@@ -18,7 +18,7 @@ class visitorSeeder extends Seeder
     {
         $faker = Faker::create();
         // $faker_ch = chin::create();
-        $arr = [4, 5, 6];
+        $arr = [3, 4, 5, 6, 7];
         $gender = ["Male", "Female", "Not Specified"];
         for ($i = 0; $i < 100; $i++) {
             $id = $faker->randomElement($arr);
@@ -29,7 +29,7 @@ class visitorSeeder extends Seeder
                 'addresser_id' => $id,
                 'addresser' => $name,
                 'sex' => $faker->randomElement($gender),
-                'section_name' => $faker->randomElement(['floor 1', 'floor 2', 'floor 3']),
+                'section_name' => $faker->randomElement(['apple', 'mango', 'banana']),
                 'dob' => $faker->date(),
                 'phone' => $faker->phoneNumber(),
                 'address' => $faker->address(),

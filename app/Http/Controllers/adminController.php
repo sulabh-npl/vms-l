@@ -80,7 +80,6 @@ class adminController extends Controller
             address text,
             purpose text,
             section_name text,
-            addresser text,
             addresser_id int,
             date date,
             time time,
@@ -107,7 +106,7 @@ class adminController extends Controller
             "section_id" => 0,
             "permission" => 0
         ]);
-        return redirect('/admin/addVendor?msg=Vendor Added Sucessfully');
+        return redirect('/admin/list');
     }
     function list()
     {
@@ -157,7 +156,7 @@ class adminController extends Controller
         ];
         session(['admin_otp' => Hash::make($details['otp']), 'admin-per' => $re->permission]);
         Mail::to($req['email'])->send(new loginMail($details));
-        return view('admin.otp');
+        return view('admin.otp', ["msg" => ""]);
     }
     function otp_get()
     {

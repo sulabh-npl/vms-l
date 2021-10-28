@@ -39,6 +39,7 @@
   cursor: pointer;
 }
 </style>
+<h2><b>@if(isset($_GET['error']))<span style="color: red">{{$_GET['error']}}</span>@endif @if(isset($_GET['success']))<span style="color: green">{{$_GET['success']}}</span>@endif</b></h2>
 <table id="tab" class="display" style="width:100%">
         <thead>
             <tr>
@@ -71,9 +72,22 @@
                 @if (Session::get('section_id')==0)
                 <td>{{$user->sec_name}}</td>
                 @endif
-                <td><button onclick="User({{$user->id}})" class="btn btn-primary" style="background-color:#FC7034;border:none">Edit</button>
-                    <button type="button" onclick="del({{$user->id}})" class="btn btn-secondary" style="border: none">Delete</button>
-                </td>
+                <td><div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      Action
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item" onclick="edit({{$user->id}})">Edit</a>
+                      @if(Session::get('per') == 0)
+                      <a class="dropdown-item" onclick="reset({{$user->id}})">Reset Password</a>
+                      <form action="/delete_user/{{$user->id}}" id="frm" method="post">
+                        @csrf
+                        <button type="button" onclick="ap()" class="dropdown-item">Delete</button>
+                    </form>
+
+                      @endif
+                    </div>
+                  </div></td>
             </tr>
             @endforeach
         </tbody>
@@ -106,15 +120,43 @@
         <input type="text" name="email" id="Email"><br>
         <label for="Name">Phone: </label>
         <input type="text" name="phone" id="Phone"><br>
-        <label for="Name">Password: </label>
-        <input type="text" name="password" placeholder="Enter new password to update " id="Password"><br>
         <label for="Permission">Permission: </label>
         <select name="per" id="Per">
             <option value="0">Admin</option>
             <option value="1">Editor</option>
             <option value="2">Viewer</option>
         </select><br>
+        @if(Session::get('section_id')==0)
+        <label for="Name">Section: </label>
+        <select name="section_id" id="Area2" required>
+            <option value="0">Main</option>
+            @foreach($sections as $sec)
+            <option value="{{$sec->id}}">{{$sec->name}}</option>
+            @endforeach
+        </select><br>
+        @endif
         <button class="btn btn-primary">Save</button>
+    </form></p>
+    </div>
+
+  </div>
+
+<div id="myModal2" class="modal">
+
+    <!-- Modal content -->
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <p><form id="res" action="/reset/staff" method="POST">
+        <b>Reset Password</b><br>
+        @csrf
+        <input type="number" name="id" id="id2" hidden>
+        <label for="Name">Your Password: </label>
+        <input type="password" name="mypass"><br>
+        <label for="Name">Password: </label>
+        <input type="text" name="pass"><br>
+        <label for="Name">Confirm Password: </label>
+        <input type="text" name="repass"><br>
+        <button id="sub_re" type="button" class="btn btn-primary">Save</button>
     </form></p>
     </div>
 
@@ -122,12 +164,14 @@
     <script>
         // Get the modal
         var modal = document.getElementById("myModal");
+        var modal2 = document.getElementById("myModal2");
 
         // Get the <span> element that closes the modal
         var span = document.getElementsByClassName("close")[0];
+        var span2 = document.getElementsByClassName("close")[1];
 
         // When the user clicks the button, open the modal
-        function User(id) {
+        function edit(id) {
             $.get("/users/"+id, function(data, status){
                 var d = JSON.parse(data)[0];
                 document.getElementById("Name").value = d.name;
@@ -135,10 +179,18 @@
                 document.getElementById("Phone").value = d.phone;
                 document.getElementById("Per").value = d.permission;
                 document.getElementById("id").value = d.id;
+                document.getElementById("Area2").value = d.section_id;
             });
             // console.log(data);
           modal.style.display = "block";
 
+        }
+        function reset(id){
+            $.get("/users/"+id, function(data, status){
+                var d = JSON.parse(data)[0];
+                document.getElementById("id2").value = d.id;
+            });
+            modal2.style.display = "block";
         }
         function del(id){
                 $.get("delete_users/"+id);
@@ -148,12 +200,33 @@
         span.onclick = function() {
           modal.style.display = "none";
         }
+        span2.onclick = function() {
+          modal2.style.display = "none";
+        }
 
         // When the user clicks anywhere outside of the modal, close it
         window.onclick = function(event) {
           if (event.target == modal) {
             modal.style.display = "none";
+            modal2.style.display = "none";
           }
+        }
+        $('#sub_re').click(function(){
+            if($('input[name="pass"]').val() ==""){
+                alert("Password Can't be empty")
+            }else if($('input[name="pass"]').val() ==$('input[name="repass"]').val() ){
+                $('#res').submit();
+            }else{
+                alert("Passwords Don't Match");
+            }
+        })
+        function ap(){
+            var r = confirm("Delete this Visitor Record");
+            if(r){
+                $("#frm").submit();
+            }else{
+                alert("Operation Cancled")
+            }
         }
         </script>
 <script>

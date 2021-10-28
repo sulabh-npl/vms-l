@@ -69,6 +69,7 @@
                         </ul>
                     </li>
                     @endif
+                    @if(Session::get('per')==0)
                     <li class="nav-item has-submenu">
                         <a class="nav-link" href="#"><i class="fa fa-user" aria-hidden="true"></i> Users  </a>
                         <ul class="submenu collapse">
@@ -80,6 +81,7 @@
                             </li>
                         </ul>
                     </li>
+                    @endif
                     @if (Session::has('name'))
 					<li id="">
 						<a class="" href="/user"><i class="fas fa-user"></i>{{Session::get('name')}}
@@ -150,9 +152,6 @@
 <!--End Wrapper -->
 </body>
 <script>
-	if({{Session::get('per')}} != 0){
-		document.getElementById('new').style.display="none"
-	}
     document.addEventListener("DOMContentLoaded", function(){
   document.querySelectorAll('.sidebar .nav-link').forEach(function(element){
 
