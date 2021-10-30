@@ -8,6 +8,9 @@
     margin: 15px;
     width: 30%;
 }
+.card-title:link{
+    color: #898989
+}
 </style>
             <!-- Section 1 -->
 <div class="section-1-container section-container" id="charts">
@@ -20,74 +23,122 @@
 		</div>
     <div id="v1" class="row">
                   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-                  <div class="col-sm-6">
-                      <div id="chart_pie" style="width: 100%; height: 250px;"></div>
+                  <div class="col-sm-3">
+                    <div class="card text-right" style="width: 90%;margin-left:5%">
+                        <div class="card-body">
+                          <h5 class="card-title">Today Visitors</h5>
+                          <button class="btn btn-primary" disabled>{{$v["tV"]}}</button>
+                        </div>
+                      </div>
                   </div>
-                  <div class="col-sm-6">
-                      <div id="chart_area" style="width: 100%; height: 250px;"></div>
+                  <div class="col-sm-3">
+                      <div class="card text-right" style="width: 90%;margin-left:5%">
+                          <div class="card-body">
+                            <h5 class="card-title">Last 7 days' visitors</h5>
+                            <button class="btn btn-primary" disabled>{{$v["wV"]}}</button>
+                          </div>
+                        </div>
                   </div>
+                  <div class="col-sm-3">
+                      <div class="card text-right" style="width: 90%;margin-left:5%">
+                          <div class="card-body">
+                            <h5 class="card-title">Last 30 days' visitors</h5>
+                            <button class="btn btn-primary" disabled>{{$v["mV"]}}</button>
+                          </div>
+                        </div>
+                  </div>
+                  <div class="col-sm-3">
+                      <div class="card text-right" style="width: 90%;margin-left:5%">
+                          <div class="card-body">
+                            <h5 class="card-title">Total visitors</h5>
+                            <button class="btn btn-primary" disabled>{{$v["V"]}}</button>
+                          </div>
+                        </div>
+                  </div>
+                  @if(Session::get('section_id')==0)
+                  @foreach($sections as $sec)
+                  <div class="col-sm-3" style="margin-top:20px">
+                    <a href="/section?name={{$sec->name}}">
+                    <div class="card text-right" style="width: 90%;margin-left:5%;color:#898989">
+                        <div class="card-body">
+                          <h5 class="card-title">Today Visitors in {{$sec->name}}</h5>
+                          <button class="btn btn-primary" disabled>{{$sec->tV}}</button>
+                        </div>
+                      </div>
+                    </a>
+                  </div>
+                  {{-- <div class="col-sm-3">
+                      <div class="card text-right" style="width: 90%;margin-left:5%">
+                          <div class="card-body">
+                            <h5 class="card-title">Last 7 days' visitors in {{$sec->name}}</h5>
+                            <button class="btn btn-primary" disabled>50</button>
+                          </div>
+                        </div>
+                  </div>
+                  <div class="col-sm-3">
+                      <div class="card text-right" style="width: 90%;margin-left:5%">
+                          <div class="card-body">
+                            <h5 class="card-title">Last 30 days' visitors in {{$sec->name}}</h5>
+                            <button class="btn btn-primary" disabled>50</button>
+                          </div>
+                        </div>
+                  </div>
+                  <div class="col-sm-3">
+                      <div class="card text-right" style="width: 90%;margin-left:5%">
+                          <div class="card-body">
+                            <h5 class="card-title">Total visitors in {{$sec->name}}</h5>
+                            <button class="btn btn-primary" disabled>50</button>
+                          </div>
+                        </div>
+                  </div> --}}
+                  @endforeach
                   <div class="col-sm-12">
-                      <div id="chart_combo" style="width: 100%; height: 500px;"></div>
+                    <div id="chart_combo" style="width: 100%; height: 500px;"></div>
                   </div>
+                  <script>
+                    //Charts
+                      google.charts.load('current', {'packages':['corechart']});
+                          google.charts.setOnLoadCallback(drawChart);
+
+                          function drawChart() {
+                            var jsonData = $.ajax({
+                                url: "/chart-data",
+                                dataType: "array",
+                                async: false
+                                }).responseText;
+
+                            // Create our data table out of JSON data loaded from server.
+                            // var combo = new google.visualization.DataTable(jsonData);
+                            var combo = google.visualization.arrayToDataTable([
+                                @foreach($data as $dat)
+                                [
+                                    @foreach($dat as $d)
+                                    @if(is_numeric($d))
+                                    {{$d}},
+                                    @else
+                                    "{{$d}}",
+                                    @endif
+                                    @endforeach
+                                ],
+                                @endforeach
+                            ]
+                            );
+
+                            options = {
+                              title : 'Area wise visit of Week',
+                              vAxis: {title: 'Visitors'},
+                              hAxis: {title: 'Date'},
+                              seriesType: 'bars',
+                            };
+                            chart = new google.visualization.ComboChart(document.getElementById('chart_combo'));
+                            chart.draw(combo, options);
+                          }
+                    </script>
+
+                  @endif
     </div>
 	</div>
 </div>
 @include('record_table')
-<script>
-//Charts
-  google.charts.load('current', {'packages':['corechart']});
-      google.charts.setOnLoadCallback(drawChart);
-
-      function drawChart() {
-
-        var area = google.visualization.arrayToDataTable([
-          ['Days', 'New Visitors', 'Repeated Visitors', 'Total Visitors'],
-          ['Jan',  1000,      400, 1400],
-          ['Feb',  1170,      460, 1630],
-          ['Mar',  660,       1120, 1780],
-          ['Apr',  1030,      540, 1570]
-        ]);
-
-        var options = {
-          title: 'Type of visitors',
-          hAxis: {title: 'Days',  titleTextStyle: {color: '#333'}},
-          vAxis: {minValue: 0}
-        };
-
-        var chart = new google.visualization.AreaChart(document.getElementById('chart_area'));
-        chart.draw(area, options);
-
-        var pie = google.visualization.arrayToDataTable([
-          ['Staff', 'guest addressed'],
-          ['Sulabh',  1000],
-          ['Kabindra',  1170],
-          ['Mahesh',  660],
-          ['Pradip',  1030]
-        ]);
-        options = {
-          title: 'Guest Addressed Today'
-        }
-        chart = new google.visualization.PieChart(document.getElementById('chart_pie'));
-        chart.draw(pie, options)
-        var combo = google.visualization.arrayToDataTable([
-          ['Date', 'Area-1', 'Area-3', 'Area-5', 'Area-7', 'Area-9', 'Average'],
-          ['2021/05/01 Mon',  165,      938,         522,             998,           450,      614.6],
-          ['2021/05/02 Tue',  135,      1120,        599,             1268,          288,      682],
-          ['2021/05/03 Wed',  157,      1167,        587,             807,           397,      623],
-          ['2021/05/04 Thu',  139,      1110,        615,             968,           215,      609.4],
-          ['2021/05/05 Fri',  136,      691,         629,             1026,          366,      569.6]
-        ]);
-
-        options = {
-          title : 'Area wise vvisit of Week',
-          vAxis: {title: 'Visitors'},
-          hAxis: {title: 'Date'},
-          seriesType: 'bars',
-          series: {5: {type: 'line'}}
-        };
-        chart = new google.visualization.ComboChart(document.getElementById('chart_combo'));
-        chart.draw(combo, options);
-      }
-</script>
 @yield("profile")
 @endsection

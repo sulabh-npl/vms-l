@@ -144,6 +144,18 @@
 			            </div>
 			        </div>
 		        </div>
+                <style>
+                .btn-primary{
+                    background-color: coral;
+                    border: none;
+                }
+                .btn-primary:hover{
+                    background-color: chocolate
+                }
+                .btn-primary:disabled{
+                    background-color: chocolate
+                }
+                </style>
                 @yield('content')
 	        </div>
 	        <!-- End content -->
@@ -152,11 +164,15 @@
 <!--End Wrapper -->
 </body>
 <script>
+    $('.btn-primary').click(function(){
+            $(this).attr('style','background-color:chocolate');
+        }, function(){
+            $(this).attr('style','background-color:coral');
+        }
+    );
     document.addEventListener("DOMContentLoaded", function(){
   document.querySelectorAll('.sidebar .nav-link').forEach(function(element){
-
     element.addEventListener('click', function (e) {
-
       let nextEl = element.nextElementSibling;
       let parentEl  = element.parentElement;
 

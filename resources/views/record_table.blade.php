@@ -5,30 +5,49 @@
                         <div class="col section-1 section-description wow fadeIn">
                           <h2>Visitors Record</h2>
                           <div class="divider-1 wow fadeInUp"><span></span></div>
+                          <form id="range-form" class="r">
                           <div class="input-group">
                             <div class="form-outline custom">
-                              <input type="search" id="form0" data="0" placeholder="Search By Name" class="form-control column-filter" />
+                                <label for="">Name:</label>
+                              <input type="search" id="form0" name="sname" data="0" placeholder="Search By Name" class="form-control column-filter" />
                             </div>
                             <div class="form-outline custom">
-                              <input type="search" id="form1" data="1" placeholder="Search By Gender" class="form-control column-filter" />
+                                <label for="">Visited Area:</label>
+                              <input list="sec_list" id="form2" data="2" name="sarea" placeholder="Search By Area" class="form-control column-filter" />
+                              <datalist id="sec_list">
+                                @foreach($sections as $sec)
+                                <option value="{{$sec->name}}">
+                                @endforeach
+                            </datalist><br>
                             </div>
                             <div class="form-outline custom">
-                              <input type="search" id="form3" data="3" placeholder="Search By Addresser" class="form-control column-filter" />
+                                <label for="">Addresser:</label>
+                                <select name="addresser" id="form3" data="3" class="form-select form-control column-filter">
+                                    <option value="" selected>All Users </option>
+                                        @foreach($users as $user)
+                                        <option value="{{$user->name}}">{{$user->name}}</option>
+                                        @endforeach
+                                    <option value="deleted">Deleted User</option>
+                                </select>
                             </div>
                             <div class="form-outline custom">
-                              <input type="search" id="form4" data="4" placeholder="Search By Document Type" class="column-filter form-control" />
+                                <label for="">Document Type:</label>
+                              <input type="search" id="form4" data="4" name="sdoc_type" placeholder="Search By Document Type" class="column-filter form-control" />
                             </div>
-                            <div class="form-outline custom">
-                              <input type="search" id="form5" data="5" placeholder="Search By Document Id" class="form-control column-filter" />
+                            <div class="form-outline custom range-input">
+                                <label for="">Start Date:</label>
+                              <input type="date" id="form5" data="5" name="min" placeholder="Search By Document Id" class="form-control range-input" />
                             </div>
-                            <div class="form-outline custom">
-                              <input type="search" id="form6" data="6" placeholder="Search By Visited Date time" class="form-control column-filter" />
+                            <div class="form-outline custom range-input">
+                                <label for="">End Date:</label>
+                                <input type="date" name="max" placeholder="Search By Visited Date time" class="form-control range-input" />
                             </div>
                           </div>
-                        </div>
+                        </form>
+                    </div>
                   </div>
                   <div class="row">
-                      <table id="tab" style="width: 110%;margin-left:-5%">
+                    <table id="example" style="width: 110%;margin-left:-5%">
                         <thead>
                             <tr>
                                 <th>Name</th>
@@ -43,57 +62,11 @@
                                 <th>Document Expiry Date</th> --}}
                                 {{-- <th>Father's Name</th> --}}
                                 <th>Visited At</th>
-                                <th>Action</th>
                                 @if (Session::get('per')!=2)
-                                {{-- <th>Edit/Delete</th> --}}
+                                <th>Action</th>
                                 @endif
                             </tr>
                         </thead>
-                        <tbody>
-                            @foreach($visitors as $vi)
-                            <tr>
-                                <td>{{$vi->name}}</td>
-                                <td>{{$vi->sex}}</td>
-                                {{-- @if (Session::get('section_id')==0) --}}
-                                <td>{{$vi->section_name}}</td>
-                                {{-- @endif --}}
-                                <td width="50px">{{$vi->addresser}}</td>
-                                <td>{{$vi->doc_type}}</td>
-                                <td>{{$vi->doc_id}}</td>
-                                {{-- <td>{{$vi->issue_date}}</td>
-                                <td>@if ($vi->exp_date == null)
-                                    Not Applicable
-                                @endif
-                                {{$vi->exp_date}}</td> --}}
-                                {{-- <td>{{$vi->father_name }}</td> --}}
-                                <td>{{$vi->date}} {{$vi->time}}</td>
-                                <td><div class="dropdown">
-                                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                      Action
-                                    </button>
-                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                      <a class="dropdown-item" onclick="View({{$vi->id}})">View</a>
-                                      @if(Session::get('per') < 2)
-                                      <a class="dropdown-item" onclick="edit({{$vi->id}})">Edit</a>
-                                      @endif
-                                      @if(Session::get('per') == 0)
-                                      <form action="/delete_visitor/{{$vi->id}}" id="frm" method="post">
-                                        @csrf
-                                        <button type="button" onclick="ap()" class="dropdown-item">Delete</button>
-                                    </form>
-
-                                      @endif
-                                    </div>
-                                  </div> </td>
-                                {{-- <td><button onclick="View({{$vi->id}})" class="btn btn-primary" style="background-color:#FC7034;border:none">View</button></td> --}}
-                                {{-- @if (Session::get('per')!=2)
-                                <td><button onclick="edit({{$vi->id}})" class="btn btn-primary" style="background-color:#FC7034;border:none">Edit</button>
-                                    <a href="/delete_visitor/{{$vi->id}}"><button class="btn btn-secondary" style="border: none">Delete</button></a>
-                                    </td>
-                                @endif --}}
-                            </tr>
-                            @endforeach
-                        </tbody>
                     </table>
                   </div>
                 <div id="v2">
@@ -241,8 +214,13 @@
                             </script>
 
                         <style>
-                            .dataTables_filter {
+                            #range-form{
                                 display: none;
+                                background-color: coral;
+                            }
+                            .custom label{
+                                color: #000;
+                                float: left !important;
                             }
                             .modal {
                           display: none; /* Hidden by default */
@@ -287,20 +265,88 @@
             </div>
 
             <script>
+
             // Setup - add a text input to each footer cell
             var yourDate = new Date()
             yourDate = yourDate.toISOString().split('T')[0];
                 // DataTable
                 function filterColumn ( i ) {
-                    $('#tab').DataTable().column( i ).search(
+                    $('#example').DataTable().column( i ).search(
                         $('#form'+i).val()
                     ).draw();
                 }
-                function defaultColumn () {
-                    $('#tab').DataTable({order: [6,"desc"]});
+                $(".range-input").change(function(){
+                var formData = "?"+ $('#range-form').serialize();
+                defaultColumn(formData);
+                })
+                var h=0;
+                function defaultColumn (formData) {
+                    $('#example').DataTable().destroy();
+                    $('#example').DataTable( {
+                            "processing": true,
+                            order: [6,"desc"],
+                            async: false,
+                            "ajax": "chart-data"+formData,
+                            "createdRow": function( row, data, dataIndex ) {
+                                if ( data[4] == "A" ) {
+                                $(data[0]).attr("onclick",`View(${data.id})`);
+                                }
+                            },
+                            "columns": [
+                                {
+                                "render": function(data, type, row){
+                                    return `<span onclick="View(${row["id"]})">${row["name"]}</span>`
+                                }
+                            },
+                                { "data": "sex" },
+                                { "data": "section_name" },
+                                { "data": "addresser" },
+                                { "data": "doc_type" },
+                                { "data": "doc_id" },
+                                { "data": "date_time" },
+                                {
+                                    "data":"id",
+                                    "render": function (data) {
+                                    return `<div class="dropdown">
+                                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                      Action
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                      <a class="dropdown-item" onclick="edit(${data})">Edit</a>`+
+                                      @if(Session::get('per') == 0)
+                                      `
+                                      <form action="/delete_visitor/${data}" id="frm" method="post">
+                                        @csrf
+                                        <button type="button" onclick="ap()" class="dropdown-item">Delete</button>
+                                    </form>
+`+
+                                      @endif
+`                                    </div>
+                                  </div>`
+                                }
+                            }
+                            ]
+
+                        } );
                     // $('#tab').DataTable({order: [6,"desc"]}).column(6).search(
                     //     yourDate
                     // ).draw();
+                    $(".dataTables_filter").append("<button class='btn btn-primary' id='adv_search' style='margin-left:5px;padding:10px'>Advanced Search</button>");
+                    $( "<p>Test</p>" ).insertAfter( ".dataTables_filter" );
+                    $('#adv_search').click(function(){
+                        if(h == 0){
+                            $('#range-form').show();
+                            h=1;
+                        }else{
+                            $('#range-form').hide();
+                            h=0;
+                        }
+                    })
+                    $(".column-filter").each(function(){
+                        if($(this).val()!=""){
+                            filterColumn( $(this).attr('data') );
+                        }
+                    })
                 }
                 function ap(){
                     var r = confirm("Delete this Visitor Record");
@@ -310,13 +356,18 @@
                         alert("Operation Cancled")
                     }
                 }
-                defaultColumn();
+
+                defaultColumn("");
                 filterColumn(0);
                 window.onload = function() {
-                    $('input.column-filter').on( 'keyup click', function () {
+                    $('.column-filter').on( 'keyup click change', function () {
                         // alert($('#form'+ $(this).attr('data')).val() )
                         filterColumn( $(this).attr('data') );
                     } );
-
                 }
+                $('td').hover(function(){
+                    $(this).parent('tr').attr('style','background-color:#ddd');
+                },function(){
+                    $(this).parent('tr').attr('style','background-color:#fff');
+                })
             </script>

@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [vendorController::class, "index"]);
+Route::get('/chart-data', [vendorController::class, "index_chart"]);
+
 Route::get('/login', [vendorController::class, "login"]);
 Route::post("/logged", [vendorController::class, "logged"]);
 Route::get('/logout', [vendorController::class, "logout"]);
@@ -25,7 +27,7 @@ Route::post("/otp", [vendorController::class, "otp"]);
 Route::post("/addSection", [vendorController::class, "add_section_post"]);
 Route::post("/rename", [vendorController::class, "section_rename"]);
 Route::get('/addSection', [vendorController::class, "add_section"]);
-Route::get('/delete_sec/{name}', [vendorController::class, "section_del"]);
+Route::post('/delete_sec/{name}', [vendorController::class, "section_del"]);
 
 Route::post('delete_visitor/{id}', [vendorController::class, "visitor_delete"]);
 Route::post('update/visitor', [vendorController::class, "visitor_edit"]);

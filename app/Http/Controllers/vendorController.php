@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use DataTables;
+use stdClass;
 
 use function Complex\sec;
 
@@ -25,14 +26,91 @@ class vendorController extends Controller
         $uid = $req->session()->get('uid');
         $staff = $uid . "_staff";
         $vi = $uid . "_visitors";
+        $dt = date("Y-n-j");
         if (Session::get('section_id') == 0) {
             $visitor = DB::table($vi)->join($staff, $vi . ".addresser_id", "=", $staff . ".id")->select($vi . ".*", $staff . ".name as addresser")->get();
             $resu = DB::select('SELECT * FROM ' . $uid . "_staff");
+            $tV = DB::table(Session::get('uid') . '_visitors')->where('date', ">=", date("Y-n-j"))->count();
+            $wV = DB::table(Session::get('uid') . '_visitors')->where('date', ">=", date("Y-n-j", strtotime("$dt -7 day")))->count();
+            $mV = DB::table(Session::get('uid') . '_visitors')->where('date', ">=", date("Y-n-j", strtotime("$dt -1 month")))->count();
+            $V = DB::table(Session::get('uid') . '_visitors')->count();
         } else {
             $visitor = DB::table($vi)->join($staff, $vi . ".addresser_id", "=", $staff . ".id")->select($vi . ".*", $staff . ".name as addresser")->where("$vi.section_name", "=", Session::get('section'))->get();
             $resu = DB::select('SELECT * FROM ' . $uid . "_staff WHERE section_id = '" . Session::get('section_id') . "'");
+            $tV = DB::table(Session::get('uid') . '_visitors')->where('section_name', "=", Session::get('section'))->where('date', ">=", date("Y-n-j"))->count();
+            $wV = DB::table(Session::get('uid') . '_visitors')->where('section_name', "=", Session::get('section'))->where('date', ">=", date("Y-n-j", strtotime("$dt -7 day")))->count();
+            $mV = DB::table(Session::get('uid') . '_visitors')->where('section_name', "=", Session::get('section'))->where('date', ">=", date("Y-n-j", strtotime("$dt -1 month")))->count();
+            $V = DB::table(Session::get('uid') . '_visitors')->where('section_name', "=", Session::get('section'))->count();
         }
-        return view("index", ['visitors' => $visitor, "info" => $req->session(), "users" => $resu]);
+        $dt = date('Y-n-j');
+        $secs = DB::table(Session::get('uid') . '_sections')->where('id', ">", 1)->get();
+        $data = array();
+        $data[0] = ["Date"];
+        foreach ($secs as $sec) {
+            array_push($data[0], $sec->name);
+        }
+        for ($i = 1; $i < 8; $i++) {
+            $data[$i] = array();
+            $j = $i - 1;
+            $ndt = date("Y-n-j", strtotime("$dt - $j day"));
+            array_push($data[$i], $ndt);
+            foreach ($secs as $sec) {
+                array_push($data[$i], DB::table(Session::get('uid') . '_visitors')->where('section_name', "=", $sec->name)->where('date', "=", $ndt)->count());
+            }
+        }
+        $v = ["tV" => $tV, "wV" => $wV, "mV" => $mV, "V" => $V];
+        return view("index", ['data' => $data, 'visitors' => $visitor, "info" => $req->session(), "users" => $resu, "v" => $v]);
+    }
+    function index_chart(Request $req)
+    {
+        if (!isset($_GET['min']) || $_GET['min'] == "") {
+            $_GET['min'] = date("Y-n-j", strtotime(date('Y-n-j') . " -90 year"));
+        }
+        if (!isset($_GET['max']) || $_GET['max'] == "") {
+            $_GET['max'] = date("Y-n-j");
+        }
+        // dd($req->min, $req->max);
+        if (Session::get('sectionn_id') == 0) {
+            $data = DB::table(Session::get('uid') . '_visitors')->where('date', '>=', $_GET['min'])->where('date', '<=', $_GET['max'])->get();
+        } else {
+            $data = DB::table(Session::get('uid') . '_visitors')->where('date', '>=', $_GET['min'])->where('date', '<=', $_GET['min'])->where('section_name', '=', Session::get('section_name'))->get();
+        }
+        $obj = new stdClass();
+        $obj->data = $data;
+        $i = 0;
+        // $new_data = array();
+        // for ($i = 0; $i <= count($data); $i++) {
+        //     $data[0]->date_time = $data[0]->date . " " . $data[0]->time;
+        // }
+        foreach ($data as $d) {
+            $date_time = $d->date . " " . $d->time;
+            $obj->data[$i]->date_time = $date_time;
+            $st = DB::table(Session::get('uid') . '_staff')->where("id", "=", $d->addresser_id)->first();
+            if ($st) {
+                $obj->data[$i]->addresser = $st->name;
+            } else {
+                $obj->data[$i]->addresser = "User Deleted";
+            }
+            $i++;
+        }
+        return ($obj);
+        $dt = date('Y-n-j');
+        $secs = DB::table(Session::get('uid') . '_sections')->where('id', ">", 1)->get();
+        $data = array();
+        $data[0] = ["Date"];
+        foreach ($secs as $sec) {
+            array_push($data[0], $sec->name);
+        }
+        for ($i = 1; $i < 8; $i++) {
+            $data[$i] = array();
+            $j = $i - 1;
+            $ndt = date("Y-n-j", strtotime("$dt - $j day"));
+            array_push($data[$i], $ndt);
+            foreach ($secs as $sec) {
+                array_push($data[$i], DB::table(Session::get('uid') . '_visitors')->where('section_name', "=", $sec->name)->where('date', "=", $ndt)->count());
+            }
+        }
+        return $data;
     }
     function add_section()
     {
@@ -198,20 +276,30 @@ class vendorController extends Controller
     }
     function section()
     {
-        $name = $_GET['name'];
-        $uid = Session::get('uid');
-        $staff = $uid . "_staff";
-        $vi = $uid . "_visitors";
-        $r = DB::table($uid . "_sections")->where('name', '=', $name)->first();
-        if ($r == null) {
-            return "Dont Change URL";
+        if (Session::get('access') && Session::get("section_id") == 0) {
+            $name = $_GET['name'];
+            $uid = Session::get('uid');
+            $staff = $uid . "_staff";
+            $vi = $uid . "_visitors";
+            $r = DB::table($uid . "_sections")->where('name', '=', $name)->first();
+            if ($r == null) {
+                return "Dont Change URL";
+            } else {
+                $id = $r->id;
+            }
+            // dd($id);
+            $dt = date("Y-n-j");
+            $visitor = DB::table($vi)->join($staff, "$vi.addresser_id", "=", "$staff.id")->select("$vi.*", "$staff.name as addresser")->where($vi . ".section_name", "=", $name)->get();
+            $tV = DB::table(Session::get('uid') . '_visitors')->where('section_name', "=", $name)->where('date', ">=", date("Y-n-j"))->count();
+            $wV = DB::table(Session::get('uid') . '_visitors')->where('section_name', "=", $name)->where('date', ">=", date("Y-n-j", strtotime("$dt -7 day")))->count();
+            $mV = DB::table(Session::get('uid') . '_visitors')->where('section_name', "=", $name)->where('date', ">=", date("Y-n-j", strtotime("$dt -1 month")))->count();
+            $V = DB::table(Session::get('uid') . '_visitors')->where('section_name', "=", $name)->count();
+            $v = ["tV" => $tV, "wV" => $wV, "mV" => $mV, "V" => $V];
+            $resu = DB::select('SELECT * FROM ' . $uid . "_staff WHERE section_id = '" . $id . "'");
+            return view("section", ["visitors" => $visitor, "sec_name" => $name, "users" => $resu, "v" => $v]);
         } else {
-            $id = $r->id;
+            return "You are not permitted here";
         }
-        // dd($id);
-        $visitor = DB::table($vi)->join($staff, "$vi.addresser_id", "=", "$staff.id")->select("$vi.*", "$staff.name as addresser")->where($vi . ".section_name", "=", $name)->get();
-        $resu = DB::select('SELECT * FROM ' . $uid . "_staff WHERE section_id = '" . $id . "'");
-        return view("section", ["visitors" => $visitor, "sec_name" => $name, "users" => $resu]);
     }
     function section_rename(Request $req)
     {

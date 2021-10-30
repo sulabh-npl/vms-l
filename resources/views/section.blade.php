@@ -55,14 +55,55 @@
               cursor: pointer;
             }
    </style>
+   <div class="container">
    <h1>{{$_GET['name']}}</h1>
+
+   <div class="row" style="margin-top: 30px">
+    <div class="col-sm-3">
+        <div class="card text-right" style="width: 90%;margin-left:5%">
+            <div class="card-body">
+              <h5 class="card-title">Today Visitors</h5>
+              <button class="btn btn-primary" disabled>{{$v["tV"]}}</button>
+            </div>
+          </div>
+      </div>
+      <div class="col-sm-3">
+          <div class="card text-right" style="width: 90%;margin-left:5%">
+              <div class="card-body">
+                <h5 class="card-title">Last 7 days' visitors</h5>
+                <button class="btn btn-primary" disabled>{{$v["wV"]}}</button>
+              </div>
+            </div>
+      </div>
+      <div class="col-sm-3">
+          <div class="card text-right" style="width: 90%;margin-left:5%">
+              <div class="card-body">
+                <h5 class="card-title">Last 30 days' visitors</h5>
+                <button class="btn btn-primary" disabled>{{$v["mV"]}}</button>
+              </div>
+            </div>
+      </div>
+      <div class="col-sm-3">
+          <div class="card text-right" style="width: 90%;margin-left:5%">
+              <div class="card-body">
+                <h5 class="card-title">Total visitors</h5>
+                <button class="btn btn-primary" disabled>{{$v["V"]}}</button>
+              </div>
+            </div>
+      </div>
+   </div>
+</div>
     @if(Session::get('per')==0)
    <form action="/rename?name={{$_GET['name']}}" id="f" method="post">
     @csrf
     <input type="text" id="act" name="act" style="display: none">
     <label for="">To Rename Section</label>
     <input type="text" name="re_name" id="r" placeholder="Enter New Name for section" class="form-control" style="margin-left: auto; margin-right:auto;width:50%" />
-    <button type="button" class="btn btn-primary" id="re" onclick="rename()">Rename</button><button type="button" onclick="del()" class="btn btn-secondary">Delete</button>
+    <button type="button" class="btn btn-primary" id="re" onclick="rename()">Rename</button>
+</form>
+<form id="delete" action="/delete_sec/{{$_GET['name']}}" method="post">
+@csrf
+<button type="button" onclick="del()" class="btn btn-secondary">Delete</button>
 </form>
 @endif
 <div id="dialog" title="Basic dialog">
@@ -75,7 +116,7 @@
 function del() {
     var re = confirm("Are you sure that you want to delete this section");
     if(re == true){
-        window.location.replace("/delete_sec/{{$_GET['name']}}");
+        $('#delete').submit();
     }
 }
 $("#re").attr('disabled','true')
