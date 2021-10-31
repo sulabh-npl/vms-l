@@ -122,14 +122,16 @@
         <input type="text" name="phone" id="Phone"><br>
         <label for="Permission">Permission: </label>
         <select name="per" id="Per">
-            <option value="0">Admin</option>
-            <option value="1">Editor</option>
+        @if(Session::get('section_id')==0)
+            <option value="0">Super Admin</option>
+            <option value="1">Super Editor</option>
+        @endif
             <option value="2">Viewer</option>
         </select><br>
         @if(Session::get('section_id')==0)
         <label for="Name">Section: </label>
         <select name="section_id" id="Area2" required>
-            <option value="0">Main</option>
+            <option value="0">All</option>
             @foreach($sections as $sec)
             <option value="{{$sec->id}}">{{$sec->name}}</option>
             @endforeach
@@ -162,6 +164,18 @@
 
   </div>
     <script>
+        $("#Area2").change( function (){
+
+            if($("#Area2").val() == 0){
+                $('select[name="per"]').show();
+                $('option[value="2"]').text("Super Viewer");
+                $('label[for="Permission"]').show();
+            }else{
+                $('select[name="per"]').val(2);
+                $('select[name="per"]').hide();
+                $('label[for="Permission"]').hide();
+            }
+        })
         // Get the modal
         var modal = document.getElementById("myModal");
         var modal2 = document.getElementById("myModal2");
@@ -180,17 +194,28 @@
                 document.getElementById("Per").value = d.permission;
                 document.getElementById("id").value = d.id;
                 document.getElementById("Area2").value = d.section_id;
+                modal.style.display = "block";
+          if($("#Area2").val() == 0){
+            $('select[name="per"]').show();
+            $('option[value="2"]').text("Super Viewer");
+            $('label[for="Permission"]').show();
+        }else{
+            $('select[name="per"]').val(2);
+            $('label[for="Permission"]').hide();
+            $('select[name="per"]').hide();
+        }
             });
             // console.log(data);
-          modal.style.display = "block";
+
 
         }
         function reset(id){
             $.get("/users/"+id, function(data, status){
                 var d = JSON.parse(data)[0];
                 document.getElementById("id2").value = d.id;
-            });
             modal2.style.display = "block";
+
+            });
         }
         function del(id){
                 $.get("delete_users/"+id);

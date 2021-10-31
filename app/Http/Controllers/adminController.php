@@ -60,6 +60,14 @@ class adminController extends Controller
             name text,
             PRIMARY KEY(id)
         )");
+        DB::statement("CREATE TABLE $d->id" . "_attendence (
+            id int NOT NULL AUTO_INCREMENT,
+            staff_id int,
+            entry_time time,
+            exit_time time,
+            date date,
+            PRIMARY KEY(id)
+        )");
         DB::statement("CREATE TABLE $d->id" . "_staff (
             id int NOT NULL AUTO_INCREMENT,
             name text,

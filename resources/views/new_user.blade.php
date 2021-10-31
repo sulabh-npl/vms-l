@@ -853,8 +853,6 @@ input.checkbox:checked:after {
                     <div class="select">
                     <select class="form-select" style="width: 94.5%" aria-label="Default select example" name="per">
                         <option value="-1" selected>Select Permission</option>
-                        <option value="0">Admin</option>
-                        <option value="1">Editor</option>
                         <option value="2">Viewer</option>
                         @if($type)
                         <option value="3">Super Admin</option>

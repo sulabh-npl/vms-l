@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [vendorController::class, "index"]);
 Route::get('/chart-data', [vendorController::class, "index_chart"]);
+Route::get('/attendence', [vendorController::class, "attendence"]);
+Route::post("/update_details", [vendorController::class, "update_self"]);
 
 Route::get('/login', [vendorController::class, "login"]);
 Route::post("/logged", [vendorController::class, "logged"]);

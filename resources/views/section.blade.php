@@ -100,7 +100,7 @@
             </div>
       </div>
       <div class="col-sm-3">
-          <div class="card text-right" style="width: 90%;margin-left:5%">
+          <div class="card text-right" style="width: 102.5%;margin-left:-2.5%">
               <div class="card-body">
                 <h5 class="card-title">Total visitors</h5>
                 <button class="btn btn-primary" disabled>{{$v["V"]}}</button>

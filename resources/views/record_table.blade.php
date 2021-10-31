@@ -47,8 +47,8 @@
 
                     </div>
                   </div>
-                  <div class="row">
-                    <table id="example" style="width: 110%;margin-left:-5%">
+                  <div class="row" style="margin-left:-10%; width:110% ">
+                    <table id="example" style="width: 105%;">
                         <thead>
                             <tr>
                                 <th>Name</th>
@@ -164,8 +164,8 @@
                                     document.getElementById("Phone2").value = d.phone;
                                     document.getElementById("Addresser2").value = d.addresser_id;
                                     document.getElementById("Area2").value = d.section_name;
+                                    modal2.style.display = "block";
                                 });
-                                modal2.style.display = "block";
                             }
                             // When the user clicks the button, open the modal
                             function View(id) {
@@ -193,9 +193,9 @@
                                     document.getElementById("Date_time").innerHTML = d.date+" "+d.time;
 
                                     document.getElementById("Purpose").innerHTML = d.purpose;
+                                    modal.style.display = "block";
                                 });
                                 // console.log(data);
-                              modal.style.display = "block";
 
                             }
                             // When the user clicks on <span> (x), close the modal

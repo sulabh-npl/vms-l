@@ -142,7 +142,18 @@ class vendorController extends Controller
         ]);
         return redirect('/addSection?msg=Section added sucessfully');
     }
-
+    function attendence()
+    {
+        if (!Session::get('access')) {
+            return redirect('/login');
+        }
+        $info = DB::table(Session::get('uid') . '_attendence')->join(Session::get('uid') . '_staff', Session::get('uid') . '_attendence.staff_id', '=', Session::get('uid') . '_staff.id')->join(Session::get('uid') . '_sections', Session::get('uid') . '_staff.section_id', '=', Session::get('uid') . '_sections.id')->select(Session::get('uid') . '_staff.name', Session::get('uid') . '_staff.phone', Session::get('uid') . '_staff.email', Session::get('uid') . '_attendence.*', Session::get('uid') . '_sections.name as section_name');
+        if (Session::get('section_id') != 0) {
+            $info = $info->where(Session::get('uid') . '_staff.section_id', '=', Session::get('section_id'));
+        }
+        $info = $info->get();
+        return view('attendence', ['info' => $info]);
+    }
     function change_pass(Request $req)
     {
         if ($req['new'] != $req['r_new']) {
@@ -399,6 +410,26 @@ class vendorController extends Controller
                 return redirect("/manage_users?error=Wrong Password");
             }
             return redirect('/manage_users?success=User Password Modified');
+        } else {
+            return "You are not permitted to update.";
+        }
+    }
+    function update_self(Request $req)
+    {
+        if ($req->session()->get('section_id') == 0 && $req->session()->get('per') == 0 && $req->session()->get('access')) {
+            if ($req->file('bg_img') != "") {
+                $file = $req->file('bg_img');
+                $file->move("images/", $req->id . ".jpg");
+            }
+            // $flight = vendor::find($req->id);
+            // dd($req->id);
+            // $flight->name = $req['name'];
+            // $flight->email = $req['email'];
+            // $flight->phone = $req['phone'];
+            // $flight->address = $req['address'];
+            // $flight->save();
+            $re = DB::update("update vendors set name = ?, phone = ?, email = ?, address= ? where id = ?", [$req['name'], $req['phone'], $req['email'], $req->address, $req['id']]);
+            return redirect('/details');
         } else {
             return "You are not permitted to update.";
         }

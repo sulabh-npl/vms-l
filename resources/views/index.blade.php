@@ -89,7 +89,7 @@
                   </div> --}}
                   @endforeach
                   <div class="col-sm-12">
-                    <div id="chart_combo" style="width: 100%; height: 500px;"></div>
+                    <div id="chart_combo" style="width: 120%;margin-left:-15%; height: 500px;"></div>
                   </div>
                   <script>
                     //Charts
