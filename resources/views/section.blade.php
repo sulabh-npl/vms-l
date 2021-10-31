@@ -14,7 +14,7 @@
    #dialog{
        display: none;
    }
-   .dataTables_filter {
+   #dialog2{
        display: none;
    }
                 .modal {
@@ -56,7 +56,23 @@
             }
    </style>
    <div class="container">
-   <h1>{{$_GET['name']}}</h1>
+   <h1>{{$_GET['name']}}
+    @if(Session::get('per') == 0)
+    <div class="dropdown">
+    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      Action
+    </button>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+      <a class="dropdown-item" onclick="name_re()">Rename</a>
+      <form id="delete" action="/delete_sec/{{$_GET['name']}}" method="post">
+        @csrf
+        <button type="button" onclick="del()" class="dropdown-item">Delete</button>
+        </form>
+     </div>
+  </div>
+@endif
+
+</h1>
 
    <div class="row" style="margin-top: 30px">
     <div class="col-sm-3">
@@ -93,24 +109,20 @@
       </div>
    </div>
 </div>
-    @if(Session::get('per')==0)
-   <form action="/rename?name={{$_GET['name']}}" id="f" method="post">
-    @csrf
-    <input type="text" id="act" name="act" style="display: none">
-    <label for="">To Rename Section</label>
-    <input type="text" name="re_name" id="r" placeholder="Enter New Name for section" class="form-control" style="margin-left: auto; margin-right:auto;width:50%" />
-    <button type="button" class="btn btn-primary" id="re" onclick="rename()">Rename</button>
-</form>
-<form id="delete" action="/delete_sec/{{$_GET['name']}}" method="post">
-@csrf
-<button type="button" onclick="del()" class="btn btn-secondary">Delete</button>
-</form>
-@endif
 <div id="dialog" title="Basic dialog">
     <p>Do you want to make changes in Previos Data Also?</p>
     <button class="btn btn-primary" id="sub" data="1">Yes</button>
     <button class="btn btn-secondary" id="sub" data="0">No</button>
   </div>
+  <div id="dialog2" title="Rename">
+    <form action="/rename?name={{$_GET['name']}}" id="f" method="post">
+        @csrf
+        <input type="text" id="act" name="act" style="display: none">
+        <label for="">To Rename Section</label>
+        <input type="text" name="re_name" id="r" placeholder="Enter New Name for section" class="form-control" style="margin-left: auto; margin-right:auto;width:50%" />
+        <button type="button" class="btn btn-primary" id="re" onclick="rename()">Rename</button>
+    </form>
+ </div>
   @include('record_table')
 <script>
 function del() {
@@ -133,6 +145,9 @@ $('#dialog button').click(function(){
 })
 function rename() {
     $( "#dialog" ).attr("title", "What's Next?").dialog();
+}
+function name_re() {
+    $( "#dialog2" ).dialog();
 }
                 </script>
     </div>

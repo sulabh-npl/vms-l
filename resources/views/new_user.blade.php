@@ -191,7 +191,7 @@ h2 {
   padding: 3em;
 }
 
-input[type="text"], input[type="email"], input[type="password"] {
+input[type="text"], input[type="email"], input[type="number"], input[type="password"] {
   font-size: 0.9em;
   color: #fff;
   font-weight: 100;
@@ -251,7 +251,7 @@ input.email, input.text.w3lpass {
   color: #fff;
 }
 
-input[type="submit"] {
+input[type="button"] {
   font-size: .9em;
   color: #fff;
   background: #dbb22b;
@@ -265,7 +265,7 @@ input[type="submit"] {
   letter-spacing: 4px;
 }
 
-input[type="submit"]:hover {
+input[type="button"]:hover {
   -webkit-transition: .5s all;
   -moz-transition: .5s all;
   -o-transition: .5s all;
@@ -575,7 +575,7 @@ input.checkbox:checked:after {
 
 /*-- responsive-design --*/
 @media(max-width:1440px) {
-  input[type="text"], input[type="email"], input[type="password"] {
+  input[type="text"], input[type="email"], input[type="number"], input[type="password"] {
     width: 94%;
   }
 }
@@ -631,7 +631,7 @@ input.checkbox:checked:after {
     width: 58%;
   }
 
-  input[type="text"], input[type="email"], input[type="password"] {
+  input[type="text"], input[type="email"], input[type="number"], input[type="password"] {
     width: 93%;
   }
 }
@@ -667,7 +667,7 @@ input.checkbox:checked:after {
     margin: 1.5em 0;
   }
 
-  input[type="submit"] {
+  input[type="button"] {
     margin: 2em 0;
   }
 
@@ -705,7 +705,7 @@ input.checkbox:checked:after {
     padding: 1.8em;
   }
 
-  input[type="text"], input[type="email"], input[type="password"] {
+  input[type="text"], input[type="email"], input[type="number"], input[type="password"] {
     width: 91%;
   }
 
@@ -742,12 +742,12 @@ input.checkbox:checked:after {
     margin-top: 1.5em;
   }
 
-  input[type="submit"] {
+  input[type="button"] {
     margin: 2em 0 1.5em;
     letter-spacing: 3px;
   }
 
-  input[type="submit"] {
+  input[type="button"] {
     margin: 2em 0 1.5em;
   }
 
@@ -785,7 +785,7 @@ input.checkbox:checked:after {
     margin: 0 0 1em;
   }
 
-  input[type="text"], input[type="email"], input[type="password"] {
+  input[type="text"], input[type="email"], input[type="number"], input[type="password"] {
     width: 89.5%;
     font-size: 0.85em;
   }
@@ -808,7 +808,7 @@ input.checkbox:checked:after {
     background-position: 0 0px;
   }
 
-  input[type="submit"] {
+  input[type="button"] {
     margin: 1.5em 0;
     padding: 0.8em;
     font-size: .85em;
@@ -829,18 +829,19 @@ input.checkbox:checked:after {
 </style>
 <div class="main-w3layouts wrapper">
     <h2><b>{{$msg}}</b></h2>
+    <h2 style="color: red"><b>{{$err}}</b></h2>
 		<h1>Add New User</h1>
 		<div class="main-agileinfo">
 			<div class="agileits-top">
 				<form action="/post_new_user" method="POST">
                     @csrf
 					<input class="email" type="text" name="name" placeholder="Name" required="">
-					<input class="email" type="text" name="phone" placeholder="Phone Number" required="">
+					<input class="email" type="number" name="phone" placeholder="Phone Number" required="">
 					<input class="email" type="email" name="email" placeholder="Email Address" required="">
 					<input class="password" type="password" name="password" placeholder="Password" required=""><br>
-					<input class="password" type="password" name="re_pass" placeholder="Repeat Password" required=""><br>
+					<input class="" type="password" name="re_pass" placeholder="Repeat Password" required=""><br>
                     @if($type)
-                    <div class="select">
+                    <div class="select" id="s">
                     <select class="form-select" style="width: 94.5%" aria-label="Default select example" name="section_id">
                         <option value="-1" selected>Select Section</option>
                         @foreach($sections_user as $section)
@@ -855,15 +856,29 @@ input.checkbox:checked:after {
                         <option value="0">Admin</option>
                         <option value="1">Editor</option>
                         <option value="2">Viewer</option>
+                        @if($type)
+                        <option value="3">Super Admin</option>
+                        <option value="4">Super Editor</option>
+                        <option value="5">Super Viewer</option>
+                        @endif
                     </select></div>
-					<input type="submit" value="Register">
+					<input type="button" style="width: 25%;margin-left:0px" value="Register">
 				</form>
 			</div>
 		</div>
 	</div>
     <script>
+        $('#s').hide();
 
-        $('input[type="submit"]').click(function(){
+        $('select[name="per"]').change(function(){
+            if($(this).val() >2 || $(this).val() == -1){
+                $('select[name="section_id"]').val(0);
+                $('#s').hide();
+            }else{
+                $('#s').show();
+            }
+        })
+        $('input[type="button"]').click(function(){
             if($('input[name="name"]').val() == ""){
                 alert("Enter Name");
             }else if ($('input[name="phone"]').val() == ""){
@@ -884,11 +899,10 @@ input.checkbox:checked:after {
                 $('form').submit();
             }
         });
-        $('select[name="section_id"]').keyup(function(){
+        $('select[name="per"]').keyup(function(){
             if(this.val() != "-1"){
-        $('input[type="submit"]').removeAttr('disabled');
+            $('input[type="button"]').removeAttr('disabled');
             }
         });
-
     </script>
     @endsection

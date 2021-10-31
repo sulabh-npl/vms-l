@@ -1,19 +1,14 @@
-            <!-- Section 2 -->
-            <div class="section-2-container section-container" id="table">
-                <div class="container">
-                  <div class="row">
-                        <div class="col section-1 section-description wow fadeIn">
-                          <h2>Visitors Record</h2>
+<h2>Visitors Record</h2>
                           <div class="divider-1 wow fadeInUp"><span></span></div>
                           <form id="range-form" class="r">
                           <div class="input-group">
                             <div class="form-outline custom">
                                 <label for="">Name:</label>
-                              <input type="search" id="form0" name="sname" data="0" placeholder="Search By Name" class="form-control column-filter" />
+                              <input type="search" id="form0" data="0" placeholder="Search By Name" class="form-control column-filter" />
                             </div>
                             <div class="form-outline custom">
                                 <label for="">Visited Area:</label>
-                              <input list="sec_list" id="form2" data="2" name="sarea" placeholder="Search By Area" class="form-control column-filter" />
+                              <input list="sec_list" id="form2" data="2" placeholder="Search By Area" class="form-control column-filter" />
                               <datalist id="sec_list">
                                 @foreach($sections as $sec)
                                 <option value="{{$sec->name}}">
@@ -32,7 +27,7 @@
                             </div>
                             <div class="form-outline custom">
                                 <label for="">Document Type:</label>
-                              <input type="search" id="form4" data="4" name="sdoc_type" placeholder="Search By Document Type" class="column-filter form-control" />
+                              <input type="search" id="form4" data="4" placeholder="Search By Document Type" class="column-filter form-control" />
                             </div>
                             <div class="form-outline custom range-input">
                                 <label for="">Start Date:</label>
@@ -44,6 +39,12 @@
                             </div>
                           </div>
                         </form>
+<!-- Section 2 -->
+            <div class="section-2-container section-container" id="table">
+                <div class="container">
+                  <div class="row">
+                        <div class="col section-1 section-description wow fadeIn">
+
                     </div>
                   </div>
                   <div class="row">
@@ -217,10 +218,19 @@
                             #range-form{
                                 display: none;
                                 background-color: coral;
+                                padding: 25px;
                             }
                             .custom label{
                                 color: #000;
                                 float: left !important;
+                                margin: 0%;
+                                padding: 0%;
+                            }
+
+                            .custom{
+                                margin-left: 2.5%;
+                                margin-right: 2.5%;
+                                width: 20%;
                             }
                             .modal {
                           display: none; /* Hidden by default */
@@ -277,6 +287,10 @@
                 }
                 $(".range-input").change(function(){
                 var formData = "?"+ $('#range-form').serialize();
+                @if(isset($_GET['name']))
+                formData = formData + "&name="+"{{$_GET['name']}}";
+                console.log(formData);
+                @endif
                 defaultColumn(formData);
                 })
                 var h=0;
@@ -342,12 +356,23 @@
                             h=0;
                         }
                     })
+
                     $(".column-filter").each(function(){
                         if($(this).val()!=""){
                             filterColumn( $(this).attr('data') );
                         }
                     })
                 }
+                // var today = new Date();
+                // var dd = today.getDate();
+                // var mm = today.getMonth()+1; //January is 0!
+
+                // var yyyy = today.getFullYear();
+                // if(dd<10){dd='0'+dd} if(mm<10){mm='0'+mm} today = +yyyy+'-'+mm+'-'+dd;
+
+                // $('input[name=min]').attr('value', today);
+
+                // $('input[name=min]').val(new Date);
                 function ap(){
                     var r = confirm("Delete this Visitor Record");
                     if(r){
@@ -356,8 +381,11 @@
                         alert("Operation Cancled")
                     }
                 }
-
-                defaultColumn("");
+                var fa = "";
+                @if(isset($_GET['name']))
+                fa = "?name="+"{{$_GET['name']}}";
+                @endif
+                defaultColumn(fa);
                 filterColumn(0);
                 window.onload = function() {
                     $('.column-filter').on( 'keyup click change', function () {

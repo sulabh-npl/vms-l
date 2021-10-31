@@ -4,10 +4,6 @@
 <style>.fe{
  display: none;
 }
-.custom{
-    margin: 15px;
-    width: 30%;
-}
 .card-title:link{
     color: #898989
 }

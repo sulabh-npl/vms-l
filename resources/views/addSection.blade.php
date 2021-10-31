@@ -21,9 +21,18 @@
 
   </div>
 </div>
+<script>
+    $('#login').on('keyup' ,function(){
+        // alert()
+        if($(this).val().includes('&')){
+            $('input[type=submit]').attr('disabled','disabled');
+            alert("& is not allowed in section name");
+        }else{
+            $('input[type=submit]').removeAttr('disabled');
+        }
+    })
+</script>
 <style>
-
-
 
 
 

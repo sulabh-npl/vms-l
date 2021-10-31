@@ -71,10 +71,14 @@ class vendorController extends Controller
         }
         // dd($req->min, $req->max);
         if (Session::get('sectionn_id') == 0) {
-            $data = DB::table(Session::get('uid') . '_visitors')->where('date', '>=', $_GET['min'])->where('date', '<=', $_GET['max'])->get();
+            $data = DB::table(Session::get('uid') . '_visitors')->where('date', '>=', $_GET['min'])->where('date', '<=', $_GET['max']);
         } else {
-            $data = DB::table(Session::get('uid') . '_visitors')->where('date', '>=', $_GET['min'])->where('date', '<=', $_GET['min'])->where('section_name', '=', Session::get('section_name'))->get();
+            $data = DB::table(Session::get('uid') . '_visitors')->where('date', '>=', $_GET['min'])->where('date', '<=', $_GET['min'])->where('section_name', '=', Session::get('section_name'));
         }
+        if (isset($_GET['name'])) {
+            $data = $data->where("section_name", '=', $_GET['name']);
+        }
+        $data = $data->get();
         $obj = new stdClass();
         $obj->data = $data;
         $i = 0;
@@ -128,6 +132,10 @@ class vendorController extends Controller
     {
         if (!session()->get('access') || session()->get('per') != 0) {
             return redirect("/login?error=Login with permitted account");
+        }
+        $ch = DB::table(Session::get('uid') . "_sections")->where('name', '=', $req['name'])->first();
+        if ($ch != null) {
+            return redirect('/addSection?msg=Section already exists');
         }
         DB::table(Session::get('uid') . "_sections")->insert([
             'name' => $req['name']
@@ -210,14 +218,20 @@ class vendorController extends Controller
         } else {
             $msg = "";
         }
+        if (isset($_GET['error'])) {
+            $er = $_GET['error'];
+        } else {
+            $er = "";
+        }
+
         if (session()->get('section_id') == 0) {
-            $result = DB::select('select * from ' . session()->get('uid') . "_sections WHERE id != 1");
+            $result = DB::select('select * from ' . session()->get('uid') . "_sections WHERE id > 1");
             $t = 1;
         } else {
             $result = DB::select('select * from ' . session()->get('uid') . "_sections WHERE id = " . session()->get('section_id'));
             $t = 0;
         }
-        return view("new_user", ["sections_user" => $result, "msg" => $msg, "type" => $t]);
+        return view("new_user", ["sections_user" => $result, "msg" => $msg, 'err' => $er, "type" => $t]);
     }
 
     function otp(Request $req)
@@ -264,14 +278,24 @@ class vendorController extends Controller
     function post_new_user(Request $req)
     {
         // if ($req->per == "-1")
-        if (Session::get('section_id') == 0) {
-            $s = $req->section_id;
-        } else {
-            $s = Session::get('section_id');
-        }
+
         $hashed = bcrypt($req['password'], ['rounds' => 4]);
-        // $hashed = Hash::make($req['password'], ['rounds' => 3]);
-        DB::insert("insert into " . $req->session()->get('uid') . "_staff (name, phone, email, password, permission, section_id) VALUES (?,?,?,?,?,?)", [$req['name'], $req['phone'], $req['email'], $hashed, $req['per'], $s]);
+        $ch = DB::table(Session::get('uid') . '_staff')->where('email', '=', $req['email'])->first();
+        if ($ch != null) {
+            return redirect('/new_user?error=User with ' . $req['email'] . ' already exists');
+        }
+        if ($req['per'] > 2) {
+            $p = $req['per'] - 3;
+            $s = 0;
+        } else {
+            $p = $req['per'];
+            if (Session::get('section_id') == 0) {
+                $s = $req->section_id;
+            } else {
+                $s = Session::get('section_id');
+            }
+        }
+        DB::insert("insert into " . $req->session()->get('uid') . "_staff (name, phone, email, password, permission, section_id) VALUES (?,?,?,?,?,?)", [$req['name'], $req['phone'], $req['email'], $hashed, $p, $s]);
         return redirect('/new_user?msg=User added sucessfully');
     }
     function section()
