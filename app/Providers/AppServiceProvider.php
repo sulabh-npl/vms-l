@@ -28,7 +28,7 @@ class AppServiceProvider extends ServiceProvider
     {
         view()->composer('*', function ($view) {
             if (Session::has('uid')) {
-                if (DB::table('vendors')->where('id', Session::get('uid'))) {
+                if (DB::table('vendors')->find(Session::get('uid')) != null) {
                     // Session::forget('uid');
                     $sec = DB::table(Session::get('uid') . "_sections")->select("*")->where('id', ">", 1)->get();
                     $sec_per = DB::table(Session::get('uid') . "_sections")->select("*")->where('id', "=", Session::get('section_id'))->first();

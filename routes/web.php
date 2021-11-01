@@ -55,7 +55,7 @@ Route::prefix("/admin")->group(function () {
     Route::get('/addVendor', [adminController::class, 'add_vendor']);
     Route::post('/addVendor', [adminController::class, 'add_vendor_post']);
     Route::get('vendors/{id}', [adminController::class, "vendors"]);
-    Route::get('delete_vendor/{id}', [adminController::class, "vendor_delete"]);
+    Route::post('delete_vendor/{id}', [adminController::class, "vendor_delete"]);
     Route::post('update_vendor', [adminController::class, 'vendor_update']);
 
     Route::get('/list', [adminController::class, 'list']);

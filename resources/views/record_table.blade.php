@@ -1,6 +1,6 @@
 <h2>Visitors Record</h2>
                           <div class="divider-1 wow fadeInUp"><span></span></div>
-                          <form id="range-form" class="r">
+                          <form id="range-form" class="r" style="margin-left: -5%; width:105%">
                           <div class="input-group">
                             <div class="form-outline custom">
                                 <label for="">Name:</label>
@@ -48,7 +48,7 @@
                     </div>
                   </div>
                   <div class="row" style="margin-left:-10%; width:110% ">
-                    <table id="example" style="width: 105%;">
+                    <table id="example" class="display" style="width: 105%;">
                         <thead>
                             <tr>
                                 <th>Name</th>
@@ -56,7 +56,7 @@
                                 {{-- @if (Session::get('section_id')==0) --}}
                                 <th>Visited Area</th>
                                 {{-- @endif --}}
-                                <th width="50">Addressed By</th>
+                                <th>Addressed By</th>
                                 <th>Document Type</th>
                                 <th>Document Id</th>
                                 {{-- <th>Document Issue Date</th>
@@ -309,8 +309,9 @@
                             "columns": [
                                 {
                                 "render": function(data, type, row){
-                                    return `<span onclick="View(${row["id"]})">${row["name"]}</span>`
-                                }
+                                    return `<span onclick="View(${row["id"]})">${row["name"]}</span>`;
+                                },
+                                "width":"20%"
                             },
                                 { "data": "sex" },
                                 { "data": "section_name" },
@@ -318,6 +319,7 @@
                                 { "data": "doc_type" },
                                 { "data": "doc_id" },
                                 { "data": "date_time" },
+                                @if (Session::get('per')!=2)
                                 {
                                     "data":"id",
                                     "render": function (data) {
@@ -339,14 +341,17 @@
                                   </div>`
                                 }
                             }
+                            @endif
                             ]
 
                         } );
                     // $('#tab').DataTable({order: [6,"desc"]}).column(6).search(
                     //     yourDate
                     // ).draw();
-                    $(".dataTables_filter").append("<button class='btn btn-primary' id='adv_search' style='margin-left:5px;padding:10px'>Advanced Search</button>");
-                    $( "<p>Test</p>" ).insertAfter( ".dataTables_filter" );
+                    $(".dataTables_filter").hide();
+                    // $(".dataTables_filter").append("<button class='btn btn-primary' id='adv_search' style='margin-left:5px;padding:10px'>Advanced Search</button>");
+                    // $( "<p>Test</p>" ).insertAfter( ".dataTables_filter" );
+                    $('#range-form').show();
                     $('#adv_search').click(function(){
                         if(h == 0){
                             $('#range-form').show();

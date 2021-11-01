@@ -70,15 +70,17 @@ class vendorController extends Controller
             $_GET['max'] = date("Y-n-j");
         }
         // dd($req->min, $req->max);
-        if (Session::get('sectionn_id') == 0) {
+        if (Session::get('section_id') == 0) {
             $data = DB::table(Session::get('uid') . '_visitors')->where('date', '>=', $_GET['min'])->where('date', '<=', $_GET['max']);
+            if (isset($_GET['name'])) {
+                $data = $data->where("section_name", '=', $_GET['name']);
+            }
         } else {
-            $data = DB::table(Session::get('uid') . '_visitors')->where('date', '>=', $_GET['min'])->where('date', '<=', $_GET['min'])->where('section_name', '=', Session::get('section_name'));
-        }
-        if (isset($_GET['name'])) {
-            $data = $data->where("section_name", '=', $_GET['name']);
+            // dd(Session::get('section'));
+            $data = DB::table(Session::get('uid') . '_visitors')->where('date', '>=', $_GET['min'])->where('date', '<=', $_GET['max'])->where('section_name', '=', Session::get('section'));
         }
         $data = $data->get();
+        // dd($data);
         $obj = new stdClass();
         $obj->data = $data;
         $i = 0;
@@ -147,7 +149,7 @@ class vendorController extends Controller
         if (!Session::get('access')) {
             return redirect('/login');
         }
-        $info = DB::table(Session::get('uid') . '_attendence')->join(Session::get('uid') . '_staff', Session::get('uid') . '_attendence.staff_id', '=', Session::get('uid') . '_staff.id')->join(Session::get('uid') . '_sections', Session::get('uid') . '_staff.section_id', '=', Session::get('uid') . '_sections.id')->select(Session::get('uid') . '_staff.name', Session::get('uid') . '_staff.phone', Session::get('uid') . '_staff.email', Session::get('uid') . '_attendence.*', Session::get('uid') . '_sections.name as section_name');
+        $info = DB::table(Session::get('uid') . '_attendence')->join(Session::get('uid') . '_staff', Session::get('uid') . '_attendence.staff_id', '=', Session::get('uid') . '_staff.id')->select(Session::get('uid') . '_staff.name', Session::get('uid') . '_staff.phone', Session::get('uid') . '_staff.email', Session::get('uid') . '_attendence.*');
         if (Session::get('section_id') != 0) {
             $info = $info->where(Session::get('uid') . '_staff.section_id', '=', Session::get('section_id'));
         }
@@ -200,6 +202,8 @@ class vendorController extends Controller
         $req->session()->remove('otp');
         $req->session()->remove('section_id');
         $req->session()->remove('section');
+        $req->session()->remove('id');
+        $req->session()->remove('name');
         return redirect("/login");
     }
     function manage_users(Request $req)

@@ -10,10 +10,9 @@ body {
 strong {
     font-weight: 500;
 }
-
 a {
     color: #f35b3f;
-    border-bottom: 1px dashed #f35b3f;
+    /* border-bottom: 1px dashed #f35b3f; */
     text-decoration: none;
     transition: all 0.3s;
 }

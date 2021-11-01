@@ -297,7 +297,7 @@ body {
 .sidebar-wrapper .sidebar-menu .sidebar-dropdown > a:after {
   font-family: "Font Awesome 5 Free";
   font-weight: 900;
-  content: "\f105";
+  /* content: "\f105"; */
   font-style: normal;
   display: inline-block;
   font-style: normal;
@@ -540,6 +540,13 @@ body {
     border-right: none;
 }
 
+
+li {
+    float: left;
+    display:flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
 </style>
 <script>
     jQuery(function ($) {
@@ -633,9 +640,11 @@ $('.top-content').backstretch("/images/{{Session::get('uid')}}.jpg");
                         </li>
                     </ul>
                 </li>
+                @if (Session::get('per')!=2)
                 <li>
                     <a class="" href="/attendence"><i class="fas fa-user"></i>Attendence</a>
                 </li>
+                @endif
                 @if(Session::get('section_id')==0)
                 <li class="sidebar-dropdown">
                     <a class="nav-link" href="#"><i class="fa fa-list-alt" aria-hidden="true"></i> Sections  </a>
@@ -651,7 +660,7 @@ $('.top-content').backstretch("/images/{{Session::get('uid')}}.jpg");
                 @endif
                 @if(Session::get('per')==0)
                 <li class="sidebar-dropdown">
-                    <a class="nav-link" href="#"><i class="fa fa-user" aria-hidden="true"></i> Users  </a>
+                    <a class="nav-link" href="#"><i class="fa fa-user" aria-hidden="true"></i> User Options</a>
                     <ul class="sidebar-submenu">
                         <li id="new">
                             <a class="" href="/new_user"><i class="fas fa-plus"></i>Add New User</a>

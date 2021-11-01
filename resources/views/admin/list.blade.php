@@ -35,7 +35,11 @@
               {{-- <td>{{$vi->father_name }}</td> --}}
               @if (Session::get('admin-per')==0)
               <td><button onclick="edit({{$vendor->id}})" class="btn btn-primary">Edit</button>
-                  <a href="/admin/delete_vendor/{{$vendor->id}}"><button class="btn btn-secondary">Delete</button></a>
+                <form action="/admin/delete_vendor/{{$vendor->id}}" id="frm" method="post">
+                    @csrf
+                    <button type="button" onclick="ap()" class="btn btn-secondary">Delete</button>
+                </form>
+                  {{-- <a href="/admin/delete_vendor/{{$vendor->id}}"><button class="btn btn-secondary">Delete</button></a> --}}
                   </td>
               @endif
           </tr>
@@ -160,6 +164,14 @@
 
 <script>
 
+function ap(){
+    var r = confirm("Delete this Vencor Record");
+    if(r){
+        $("#frm").submit();
+    }else{
+        alert("Operation Cancled")
+    }
+}
 $(document).ready( function () {
 $('#tab').DataTable();
 } );

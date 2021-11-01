@@ -66,6 +66,7 @@ class adminController extends Controller
             entry_time time,
             exit_time time,
             date date,
+            section_name text,
             PRIMARY KEY(id)
         )");
         DB::statement("CREATE TABLE $d->id" . "_staff (
@@ -199,8 +200,18 @@ class adminController extends Controller
     {
         if ($req->session()->get('admin-access') == true && $req->session()->get('admin-per') == 0) {
             vendor::destroy($id);
+            $req->session()->remove('access');
+            $req->session()->remove('uid');
+            $req->session()->remove('utitle');
+            $req->session()->remove('per');
+            $req->session()->remove('otp');
+            $req->session()->remove('section_id');
+            $req->session()->remove('section');
+            $req->session()->remove('name');
+            $req->session()->remove('id');
             DB::statement('DROP TABLE ' . $id . '_visitors');
             DB::statement('DROP TABLE ' . $id . '_sections');
+            DB::statement('DROP TABLE ' . $id . '_attendence');
             DB::statement('DROP TABLE ' . $id . '_staff');
             unlink("images/" . $id . ".jpg");
             return redirect('/admin/list');
