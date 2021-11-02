@@ -55,6 +55,24 @@
               cursor: pointer;
             }
    </style>
+           <div class="top-content section-container" style="width: 120%;margin-left:-15%;margin-top:-20px" id="img-hh">
+            <div class="container-fluid">
+                    <div class="col col-md-10 offset-md-1 col-lg-8 offset-lg-2">
+                        <h1 class="wow fadeIn">{{Session::get('utitle')}}@if (Session::get('section')!="")
+                            ,{{Session::get('section')}}
+                        @endif</h1>
+                        <div class="buttons wow fadeInUp">
+                            <a class="btn btn-primary btn-customized" href="/#charts" role="button">
+                                <i class="fa fa-area-chart" aria-hidden="true"></i> See Chart of visitors
+                            </a>
+                            <a class="btn btn-primary btn-customized-2" href="/#table" role="button">
+                                <i class="fas fa-table"></i> Visitors Record
+                            </a>
+                        </div>
+                    </div>
+                </div>
+        </div>
+
    <div class="container">
    <h1>{{$_GET['name']}}
     @if(Session::get('per') == 0)

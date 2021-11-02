@@ -159,15 +159,15 @@ class vendorController extends Controller
     function change_pass(Request $req)
     {
         if ($req['new'] != $req['r_new']) {
-            return redirect('/change_pass')->with('msg', "Passwords Dont Match");
+            return redirect('/change_pass')->with('error-msg', "Passwords Dont Match");
         }
         $re = DB::table($req->session()->get('uid') . "_staff")->select("*")->where('id', "=", $req->session()->get('id'))->first();
         if (!Hash::check($req['old'], $re->password)) {
-            return redirect('/change_pass')->with('msg', "Incorrect Password");
+            return redirect('/change_pass')->with('error-msg', "Incorrect Password");
         }
         $hash = Hash::make($req['new']);
         DB::update('update ' . $req->session()->get('uid') . '_staff set password = ? where id = ?', [$hash, $req->session()->get('id')]);
-        return redirect('/change_pass')->with('msg', "Password Changed");
+        return redirect('/change_pass')->with('success-msg', "Password Changed");
     }
     function login(Request $req)
     {

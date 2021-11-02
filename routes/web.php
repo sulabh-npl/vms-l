@@ -52,11 +52,18 @@ Route::get('details', [vendorController::class, "view_self"]);
 Route::prefix("/admin")->group(function () {
     Route::get('/', [adminController::class, 'index']);
 
+    Route::get('/about', [adminController::class, 'about']);
+    Route::post('/about', [adminController::class, 'about_post']);
+
     Route::get('/addVendor', [adminController::class, 'add_vendor']);
     Route::post('/addVendor', [adminController::class, 'add_vendor_post']);
     Route::get('vendors/{id}', [adminController::class, "vendors"]);
     Route::post('delete_vendor/{id}', [adminController::class, "vendor_delete"]);
     Route::post('update_vendor', [adminController::class, 'vendor_update']);
+
+    Route::get('vendor_reqs/{id}', [adminController::class, "vendor_reqs"]);
+    Route::get('/vendor_requests', [adminController::class, 'requested_vendors']);
+    Route::post('delete_vendor_req/{id}', [adminController::class, "vendor_req_delete"]);
 
     Route::get('/list', [adminController::class, 'list']);
 

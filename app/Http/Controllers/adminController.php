@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Mail\loginMail;
+use App\Models\about_info;
 use App\Models\admin_user;
 use App\Models\vendor;
+use App\Models\vendor_req;
 use Facade\FlareClient\Stacktrace\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -16,11 +18,38 @@ class adminController extends Controller
 {
     function index()
     {
-        if (!Session::get('admin-access')) {
+        if (!Session::has('admin-access')) {
             return redirect("/admin/login");
         }
-        return view('admin.admin');
+        $data = DB::table('admin_chart')->first();
+        $v = DB::table('vendors');
+        $t = $v->count();
+        $v->where("registered_date", ">=", date('Y-m-d', strtotime('-15 day', strtotime($data->date))));
+        $te = DB::table('vendors')->where("exp_date", "<=", date('Y-m-d', strtotime('+15 day', strtotime($data->date))));
+        // dd($v->get());
+        return view('admin.admin', ['data' => $data, 't' => $t, 'te' => $te->count(), 'v' => $v->get(), 'e' => $te->get()]);
     }
+
+    function about()
+    {
+        $data = about_info::first();
+        return view('admin.about', ['data' => $data]);
+    }
+    function about_post(Request $req)
+    {
+        if ($req->session()->get('admin-access') == true && $req->session()->get('admin-per') == 0) {
+            if ($req->file('img') != "") {
+                // dd($req->heading);
+                $file = $req->file('img');
+                $file->move("assets/img/", "about.jpg");
+            }
+            DB::update("update about_infos set heading = ?, content = ?, heading_colour = ?, content_colour= ?, register_colour = ? where id = 1", [$req->heading, $req->content, $req->heading_colour, $req->content_colour, $req->register_colour]);
+            return redirect()->back();
+        } else {
+            return "You are not permitted to update.";
+        }
+    }
+
     function add_vendor()
     {
         if (!Session::get('admin-access')) {
@@ -43,6 +72,9 @@ class adminController extends Controller
         }
         if (Session::get('admin-per') != 0) {
             return redirect("/admin/login?error=Login with permitted account");
+        }
+        if (isset($req->rid)) {
+            vendor_req::destroy($req->rid);
         }
         DB::table('vendors')->insert([
             "name" => $req['name'],
@@ -104,13 +136,13 @@ class adminController extends Controller
         ]);
         DB::table($d->id . '_sections')->insert([
             'id' => 0,
-            'name' => 'Main'
+            'name' => 'All'
         ]);
-        DB::update('update ' . $d->id . '_sections set id = 0 where name = "Main"');
+        DB::update('update ' . $d->id . '_sections set id = 0 where name = "All"');
         DB::table($d->id . '_staff')->insert([
-            'name' => $req->uname,
-            "phone" => $req->uphone,
-            "email" => $req->uemail,
+            'name' => $req->name,
+            "phone" => $req->phone,
+            "email" => $req->email,
             "password" => bcrypt($req->upassword, ['rounds' => 4]),
             "section_id" => 0,
             "permission" => 0
@@ -175,6 +207,15 @@ class adminController extends Controller
             return redirect('/admin/login');
         }
     }
+    function requested_vendors(Request $req)
+    {
+        if (!Session::get('admin-access')) {
+            return redirect("/admin/login?error=You Must Login First");
+        }
+        $re = vendor_req::all();
+
+        return view('admin.vendor_req', ["vendors" => $re]);
+    }
     function vendor_login($id)
     {
         if (!Session::get('admin-access')) {
@@ -191,7 +232,7 @@ class adminController extends Controller
                 $file->move("images/", $req->id . ".jpg");
             }
             $re = DB::update("update vendors set name = ?, phone = ?, email = ?, address= ?, exp_date = ? where id = ?", [$req['name'], $req['phone'], $req['email'], $req->address, $req['exp_date'], $req['id']]);
-            return redirect('/admin/list');
+            return redirect()->back();
         } else {
             return "You are not permitted to update.";
         }
@@ -219,10 +260,28 @@ class adminController extends Controller
             return "You are not permitted to update.";
         }
     }
+    function vendor_req_delete($id, Request $req)
+    {
+        if ($req->session()->get('admin-access') == true && $req->session()->get('admin-per') == 0) {
+            vendor_req::destroy($id);
+            return redirect('/admin/vendor_requests');
+        } else {
+            return "You are not permitted to delete.";
+        }
+    }
     function vendors($id, Request $req)
     {
         if ($req->session()->get('admin-access') == true && $req->session()->get('admin-per') == 0) {
             $res = DB::select('select * from vendors where id = ?', [$id]);
+            return json_encode($res);
+        } else {
+            return "You are not permitted to view.";
+        }
+    }
+    function vendor_reqs($id, Request $req)
+    {
+        if ($req->session()->get('admin-access') == true && $req->session()->get('admin-per') == 0) {
+            $res = DB::select('select * from vendor_reqs where id = ?', [$id]);
             return json_encode($res);
         } else {
             return "You are not permitted to view.";

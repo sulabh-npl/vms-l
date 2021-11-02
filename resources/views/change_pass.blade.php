@@ -101,9 +101,14 @@ button[disabled] {
       <form action="/change_pass" method="post" name="change_pass_form" id="change_pass_form">
 @csrf
         {{-- <img src="/assets/ico/favicon-2.png" id="signupLogo"/> --}}
-        @if(Session::has('msg'))
-        <h4>
-            {{Session::get('msg')}}
+        @if(Session::has('error-msg'))
+        <h4 style="color: red">
+            {{Session::get('error-msg')}}
+        </h4>
+        @endif
+        @if(Session::has('success-msg'))
+        <h4 style="color: green">
+            {{Session::get('success-msg')}}
         </h4>
         @endif
         <h2 class="formTitle">

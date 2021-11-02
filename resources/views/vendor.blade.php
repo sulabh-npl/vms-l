@@ -293,7 +293,9 @@ body {
   display: inline-block;
   animation: swing ease-in-out 0.5s 1 alternate;
 }
-
+a{
+    border-bottom: none;
+}
 .sidebar-wrapper .sidebar-menu .sidebar-dropdown > a:after {
   font-family: "Font Awesome 5 Free";
   font-weight: 900;
@@ -631,14 +633,6 @@ $('.top-content').backstretch("/images/{{Session::get('uid')}}.jpg");
             <ul class="list-unstyled menu-elements">
                 <li class="sidebar-dropdown">
                     <a class="" href="/#top-content"><i class="fas fa-home"></i> Home</a>
-                    <ul class="sidebar-submenu collapse">
-                        <li>
-                            <a class="" href="/#charts"><i class="fas fa-cog"></i> Charts</a>
-                        </li>
-                        <li>
-                            <a class="" href="/#table"><i class="fas fa-user"></i>Visitors Record</a>
-                        </li>
-                    </ul>
                 </li>
                 @if (Session::get('per')!=2)
                 <li>
@@ -692,23 +686,6 @@ $('.top-content').backstretch("/images/{{Session::get('uid')}}.jpg");
     </nav>
     <!-- sidebar-wrapper  -->
     <main class="page-content">
-        <div class="top-content section-container" style="width: 120%;margin-left:-15%;margin-top:-20px" id="img-hh">
-            <div class="container-fluid">
-                    <div class="col col-md-10 offset-md-1 col-lg-8 offset-lg-2">
-                        <h1 class="wow fadeIn">{{Session::get('utitle')}}@if (Session::get('section')!="")
-                            ,{{Session::get('section')}}
-                        @endif</h1>
-                        <div class="buttons wow fadeInUp">
-                            <a class="btn btn-primary btn-customized" href="/#charts" role="button">
-                                <i class="fa fa-area-chart" aria-hidden="true"></i> See Chart of visitors
-                            </a>
-                            <a class="btn btn-primary btn-customized-2" href="/#table" role="button">
-                                <i class="fas fa-table"></i> Visitors Record
-                            </a>
-                        </div>
-                    </div>
-                </div>
-        </div>
         <style>
         .btn-primary{
             background-color: coral;
