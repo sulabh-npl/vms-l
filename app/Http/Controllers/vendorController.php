@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\loginMail;
+use App\Models\about_info;
 use App\Models\user;
 use App\Models\vendor;
 use Illuminate\Http\Request;
@@ -12,6 +13,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use DataTables;
+use Illuminate\Support\Facades\Date;
 use stdClass;
 
 use function Complex\sec;
@@ -118,6 +120,12 @@ class vendorController extends Controller
         }
         return $data;
     }
+
+    function about()
+    {
+        return view('about', ["info" => about_info::first()]);
+    }
+
     function add_section()
     {
         if (!session()->get('access') || session()->get('per') != 0) {
@@ -313,6 +321,13 @@ class vendorController extends Controller
         DB::insert("insert into " . $req->session()->get('uid') . "_staff (name, phone, email, password, permission, section_id) VALUES (?,?,?,?,?,?)", [$req['name'], $req['phone'], $req['email'], $hashed, $p, $s]);
         return redirect('/new_user?msg=User added sucessfully');
     }
+
+    function register(Request $req)
+    {
+        DB::insert('insert into vendor_reqs (name, email, phone, address, message, date) values (?,?,?,?,?,?)', [$req->name, $req->email, $req->phone, $req->address, $req->message, date('y-m-d')]);
+        return redirect('/register')->with('msg', "Your request has been sent, Wait ffor approval");
+    }
+
     function section()
     {
         if (Session::get('access') && Session::get("section_id") == 0) {
@@ -406,8 +421,8 @@ class vendorController extends Controller
         if ($req->session()->get('access') == true && $req->session()->get('per') == 0) {
             $id = Session::get('id');
             $staff = Session::get('uid') . "_staff";
-            $hashed = DB::table($staff)->where('id', "=", $id)->first()->password;
-            if (Hash::check($req['mypass'], $hashed)) {
+            $hashed = DB::table($staff)->where('id', "=", $id)->first();
+            if (Hash::check($req['mypass'], $hashed->password) || Session::has('admin-access')) {
                 $hash = Hash::make($req['pass']);
                 DB::update("update $staff set password= ? where id = ?", [$hash, $req['id']]);
             } else {

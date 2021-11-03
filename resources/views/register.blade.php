@@ -27,10 +27,10 @@
           background-color: #56baed;
         }
 
-        body {
+        /* body {
           font-family: "Poppins", sans-serif;
           height: 100vh;
-        }
+        } */
 
         a {
           color: #92badd;
@@ -137,7 +137,7 @@
           transform: scale(0.95);
         }
 
-        input[type=text] {
+        input[type=text], textarea {
           background-color: #f6f6f6;
           border: none;
           color: #0d0d0d;
@@ -158,12 +158,12 @@
           border-radius: 5px 5px 5px 5px;
         }
 
-        input[type=text]:focus {
+        input[type=text]:focus,textarea:focus {
           background-color: #fff;
           border-bottom: 2px solid #5fbae9;
         }
 
-        input[type=text]:placeholder {
+        input[type=text]:placeholder, textarea::placeholder {
           color: #cccccc;
         }
         input[type=password]:focus {
@@ -321,25 +321,24 @@
 <body>
 
 <div class="wrapper fadeInDown">
-    <div id="formContent">
+    <div id="formContent" style="width: 70%">
       <!-- Tabs Titles -->
-      <h2 class="active"> Sign In </h2>
+      <h2 class="active"> Register </h2>
       <!-- <h2 class="inactive underlineHover">Sign Up </h2> -->
 
 
       <!-- Login Form -->
-      <form action="/otp" method="POST">
+      <form action="/register" method="POST">
         @csrf
-      <label for="error" style="color: red;"><b>{{$msg}}</b></label>
-        <input list="l" name="n" class="form-select" value="<?php if(isset($_COOKIE['loc'])){ echo $_COOKIE['loc']; }?>" style="display: block;margin-left:10%;width:80%" placeholder="Enter Company Name">
-        <datalist id="l">
-            @foreach($val as $item)
-            <option value="{{$item->name}}">
-            @endforeach
-        </datalist>
-        <input type="text" id="login" class="fadeIn second" name="uname" placeholder="login">
-        <input type="password" id="password" class="fadeIn third" name="password" placeholder="password">
-        <input type="submit" class="fadeIn fourth" value="Log In">
+      <label for="error" style="color:green;"><b>@if (Session::has('msg'))
+          {{Session::get('msg')}}
+      @endif</b></label>
+        <input type="text" id="login" class="fadeIn second" name="name" required placeholder="Name">
+        <input type="text" id="login" class="fadeIn second" name="email" required placeholder="Email">
+        <input type="text" id="login" class="fadeIn second" name="phone" required placeholder="Phone">
+        <input type="text" id="login" class="fadeIn second" name="address" required placeholder="Address">
+        <textarea name="message" placeholder="Any message for us?" style="" cols="15" ></textarea>
+        <input type="submit" class="fadeIn fourth" value="Register">
       </form>
 
       <!-- Remind Passowrd -->

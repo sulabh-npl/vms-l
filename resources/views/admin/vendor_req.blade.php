@@ -69,7 +69,7 @@
              <div class="form-group">
                 <label>Password</label>
                 <div class="input-group" id="show_hide_password">
-                <input id="pass" type="password" name="upassword" class="form-control" onkeyup="check() placeholder="Password"><div class="input-group-addon">
+                <input id="pass" type="password" name="upassword" class="form-control" onkeyup="check()" placeholder="Password"><div class="input-group-addon">
                     <a href=""><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
                   </div>
                 </div>
@@ -199,5 +199,19 @@ $('#tab').DataTable({
     order:[[4, "asc"], [0, "asc"]]
 });
 } );
+$(document).ready(function() {
+                $("#show_hide_password a").on('click', function(event) {
+                    event.preventDefault();
+                    if($('#show_hide_password input').attr("type") == "text"){
+                        $('#show_hide_password input').attr('type', 'password');
+                        $('#show_hide_password i').addClass( "fa-eye-slash" );
+                        $('#show_hide_password i').removeClass( "fa-eye" );
+                    }else if($('#show_hide_password input').attr("type") == "password"){
+                        $('#show_hide_password input').attr('type', 'text');
+                        $('#show_hide_password i').removeClass( "fa-eye-slash" );
+                        $('#show_hide_password i').addClass( "fa-eye" );
+                    }
+                });
+            });
 </script>
 @endsection

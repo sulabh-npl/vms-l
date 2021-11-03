@@ -149,6 +149,23 @@ class adminController extends Controller
         ]);
         return redirect('/admin/list');
     }
+
+    function change_pass(Request $req)
+    {
+        if (!$req->session()->has("admin-access")) {
+            return redirect('/admin/login');
+        }
+        if ($req['new'] != $req['r_new']) {
+            return redirect('/admin/change_pass')->with('error-msg', "Passwords Dont Match");
+        }
+        $re = DB::table("admin_users")->select("*")->where('id', "=", $req->session()->get('admin-id'))->first();
+        if (!Hash::check($req['old'], $re->password)) {
+            return redirect('/admin/change_pass')->with('error-msg', "Incorrect Password");
+        }
+        $hash = Hash::make($req['new']);
+        DB::update('update admin_users set password = ? where id = ?', [$hash, $req->session()->get('admin-id')]);
+        return redirect('/admin/change_pass')->with('success-msg', "Password Changed");
+    }
     function list()
     {
         if (!Session::get('admin-access')) {
@@ -183,6 +200,32 @@ class adminController extends Controller
         Session::flush();
         return redirect('/admin/login');
     }
+    function manage_users(Request $req)
+    {
+        if ($req->session()->get('admin-access') != true) {
+            return redirect("admin/login");
+        }
+        $re = DB::table("admin_users")->get();
+        // $re = DB::select("SELECT * FROM " . $req->session()->get('uid') . "_staff");
+        return view("admin.manage_users", ["users" => $re]);
+    }
+    function new_user(Request $req)
+    {
+        if (!session()->get('admin-access') || session()->get('admin-per') != 0) {
+            return redirect("/admin/login?error=Login with permitted account");
+        }
+        if (isset($_GET['msg'])) {
+            $msg = $_GET['msg'];
+        } else {
+            $msg = "";
+        }
+        if (isset($_GET['error'])) {
+            $er = $_GET['error'];
+        } else {
+            $er = "";
+        }
+        return view("admin.new_user", ["msg" => $msg, 'err' => $er]);
+    }
     function otp(Request $req)
     {
         $re = admin_user::where('email', $req['email'])->first();
@@ -195,7 +238,7 @@ class adminController extends Controller
         $details = [
             "otp" => rand(100000, 999999)
         ];
-        session(['admin_otp' => Hash::make($details['otp']), 'admin-per' => $re->permission]);
+        session(['admin_otp' => Hash::make($details['otp']), 'admin-name' => $re->name, 'admin-per' => $re->permission, 'admin-id' => $re->id]);
         Mail::to($req['email'])->send(new loginMail($details));
         return view('admin.otp', ["msg" => ""]);
     }
@@ -207,6 +250,18 @@ class adminController extends Controller
             return redirect('/admin/login');
         }
     }
+    function post_new_user(Request $req)
+    {
+        // if ($req->per == "-1")
+
+        $hashed = bcrypt($req['password'], ['rounds' => 4]);
+        $ch = DB::table('admin_users')->where('email', '=', $req['email'])->first();
+        if ($ch != null) {
+            return redirect('/admin/new_user?error=User with ' . $req['email'] . ' already exists');
+        }
+        DB::insert("insert into admin_users (name, phone, email, password, permission) VALUES (?,?,?,?,?)", [$req['name'], $req['phone'], $req['email'], $hashed, $req['per'],]);
+        return redirect('/admin/new_user?msg=User added sucessfully');
+    }
     function requested_vendors(Request $req)
     {
         if (!Session::get('admin-access')) {
@@ -215,6 +270,59 @@ class adminController extends Controller
         $re = vendor_req::all();
 
         return view('admin.vendor_req', ["vendors" => $re]);
+    }
+    function staff($id, Request $req)
+    {
+        if ($req->session()->get('admin-access') == true && $req->session()->get('admin-per') == 0) {
+            $res = DB::table('admin_users')->where("id", "=", $id)->select(['id', 'name', 'email', 'phone', 'permission'])->get();
+            // $res = DB::select('select id,name,email,phone,permission from ' . $req->session()->get('uid') . '_staff where id = ?', [$id]);
+            return json_encode($res);
+        } else {
+            return "You are not permitted to view.";
+        }
+    }
+
+    function staff_delete($id, Request $req)
+    {
+        if ($req->session()->get('admin-access') == true && $req->session()->get('admin-per') == 0) {
+            DB::delete('delete from admin_users where id = ?', [$id]);
+            return redirect("/admin/manage_users?success=User Deleted sucessfully");
+        } else {
+            return "You are not permitted to delete.";
+        }
+    }
+
+    function staff_reset(Request $req)
+    {
+        if ($req->session()->get('admin-access') == true && $req->session()->get('admin-per') == 0) {
+            $id = Session::get('admin-id');
+            $hashed = DB::table('admin_users')->where('id', "=", $id)->first();
+            if (Hash::check($req['mypass'], $hashed->password)) {
+                $hash = Hash::make($req['pass']);
+                DB::update("update admin_users set password= ? where id = ?", [$hash, $req['id']]);
+            } else {
+                return redirect("/admin/manage_users?error=Wrong Password");
+            }
+            return redirect('/admin/manage_users?success=User Password Modified');
+        } else {
+            return "You are not permitted to update.";
+        }
+    }
+    function staff_update(Request $req)
+    {
+        if ($req->session()->get('admin-access') == true && $req->session()->get('admin-per') != 2) {
+            DB::update("update admin_users set name = ?, phone = ?, email =? , permission = ? where id = ?", [$req['name'], $req['phone'], $req['email'], $req['per'], $req['id']]);
+            return redirect('/admin/manage_users?success=User Modified ');
+        } else {
+            return "You are not permitted to update.";
+        }
+    }
+
+    function user()
+    {
+        $v = DB::table('admin_users')->where('id', '=', Session::get('admin-id'))->first();
+        // dd($v);
+        return view("admin.user", ["v" => $v]);
     }
     function vendor_login($id)
     {

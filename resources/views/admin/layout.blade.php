@@ -621,7 +621,7 @@ $(".page-wrapper").addClass("toggled");
         <div class="sidebar-brand">
           <a href="#">Menu</a>
         </div>
-        <a href="/user">
+        <a href="/admin/user">
         <div class="sidebar-header">
           {{-- <div class="user-pic">
             <img class="img-responsive img-rounded" src="https://raw.githubusercontent.com/azouaoui-med/pro-sidebar-template/gh-pages/src/img/user.jpg"
@@ -667,11 +667,17 @@ $(".page-wrapper").addClass("toggled");
                 </li>
                 @if (Session::get('admin-per')!=2)
                 <li>
-                    <a class="" href="/admin/about"><i class="fas fa-user"></i>About Us Page</a>
+                    <a class="" href="/admin/about"><i class="fas fa-info"></i>About Us Page</a>
+                </li>
+                <li>
+                    <a href="/admin/new_user"><i class="fas fa-user"></i>Add New User</a>
+                </li>
+                <li>
+                    <a href="/admin/manage_users"><i class="fas fa-user"></i>Manage Users</a>
                 </li>
                 @endif
                 <li>
-                    <a class="" href="admin/logout"><i class="fas fa-sign-out-alt"></i>LogOut</a>
+                    <a class="" href="/admin/logout"><i class="fas fa-sign-out-alt"></i>LogOut</a>
                 </li>
             </ul>
 

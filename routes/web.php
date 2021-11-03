@@ -20,6 +20,10 @@ Route::get('/chart-data', [vendorController::class, "index_chart"]);
 Route::get('/attendence', [vendorController::class, "attendence"]);
 Route::post("/update_details", [vendorController::class, "update_self"]);
 
+Route::get('/about', [vendorController::class, "about"]);
+Route::view('/register', 'register');
+Route::post('/register', [vendorController::class, "register"]);
+
 Route::get('/login', [vendorController::class, "login"]);
 Route::post("/logged", [vendorController::class, "logged"]);
 Route::get('/logout', [vendorController::class, "logout"]);
@@ -64,6 +68,19 @@ Route::prefix("/admin")->group(function () {
     Route::get('vendor_reqs/{id}', [adminController::class, "vendor_reqs"]);
     Route::get('/vendor_requests', [adminController::class, 'requested_vendors']);
     Route::post('delete_vendor_req/{id}', [adminController::class, "vendor_req_delete"]);
+
+    Route::get("/new_user", [adminController::class, "new_user"]);
+    Route::post("/post_new_user", [adminController::class, "post_new_user"]);
+
+    Route::get('/manage_users', [adminController::class, "manage_users"]);
+    Route::get('users/{id}', [adminController::class, "staff"]);
+    Route::post('delete_user/{id}', [adminController::class, "staff_delete"]);
+    Route::post('update/staff', [adminController::class, 'staff_update']);
+    Route::post('reset/staff', [adminController::class, 'staff_reset']);
+
+    Route::get('/user', [adminController::class, "user"]);
+    Route::view('/change_pass', 'admin.change_pass');
+    Route::post("/change_pass", [adminController::class, "change_pass"]);
 
     Route::get('/list', [adminController::class, 'list']);
 
