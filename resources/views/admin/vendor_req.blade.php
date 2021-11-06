@@ -31,10 +31,10 @@
               {{$vi->exp_date}}</td> --}}
               {{-- <td>{{$vi->father_name }}</td> --}}
               @if (Session::get('admin-per')==0)
-              <td><button onclick="add({{$vendor->id}})" class="btn btn-primary">Add</button>
+              <td><button onclick="add({{$vendor->id}})" class="btn" style="width:100%;border-radius:0px;background-color:coral;color:white">Add</button>
                 <form action="/admin/delete_vendor_req/{{$vendor->id}}" id="frm" method="post">
                     @csrf
-                    <button type="button" onclick="ap()" class="btn btn-secondary">Delete</button>
+                    <button type="button" onclick="ap()" class="btn btn-secondary" style="width: 100%;border-radius:0px">Delete</button>
                 </form>
                   {{-- <a href="/admin/delete_vendor/{{$vendor->id}}"><button class="btn btn-secondary">Delete</button></a> --}}
                   </td>
@@ -64,7 +64,7 @@
           <label for="Name">Expiry Date: </label>
           <input required type="date" name="exp_date" id="Date"><br>
           <label for="Name">Background Image: </label>
-          <input required type="file" name="bg_img" id=""><br>
+          <input type="file" name="bg_img" id=""><br>
           <h2>For Primary User</h2>
              <div class="form-group">
                 <label>Password</label>

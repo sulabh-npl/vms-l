@@ -133,10 +133,10 @@
             <td>{{$ed->phone}}</td>
             <td>{{$ed->address}}</td>
             @if (Session::get('admin-per')==0)
-            <td><button onclick="edit({{$ed->id}})" class="btn btn-primary">Edit</button>
+            <td><button onclick="edit({{$ed->id}})" class="btn btn-primary" style="width:100%;border-radius:0px;background-color:coral;color:white">Edit</button>
             <form action="/admin/delete_vendor/{{$ed->id}}" id="frm" method="post">
                 @csrf
-                <button type="button" onclick="ap()" class="btn btn-secondary">Delete</button>
+                <button type="button" onclick="ap()" class="btn btn-secondary" style="width:100%;border-radius:0px">Delete</button>
             </form>
                 {{-- <a href="/admin/delete_vendor/{{$vendor->id}}"><button class="btn btn-secondary">Delete</button></a> --}}
             </td>

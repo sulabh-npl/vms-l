@@ -43,11 +43,23 @@ class AppServiceProvider extends ServiceProvider
                         array_push($sec_new, $s);
                         // dd($s);
                     }
+
                     view()->share('sections', $sec_new);
                     view()->share('sec_per', $sec_per->name);
-                    redirect('/');
                 }
             }
         });
+        // $company = (object) [
+        //     'name' => 'Sevani',
+        //     'phone' => "0990909090",
+        //     'address' => "China",
+        //     'email' => "sevani@gmail.com",
+        // ];
+        $company = new stdClass;
+        $company->name = "Sevani";
+        $company->phone = "98989898";
+        $company->address = "China";
+        $company->email = "Test info";
+        view()->share('company', $company);
     }
 }

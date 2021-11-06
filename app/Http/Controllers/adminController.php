@@ -24,8 +24,8 @@ class adminController extends Controller
         $data = DB::table('admin_chart')->first();
         $v = DB::table('vendors');
         $t = $v->count();
-        $v->where("registered_date", ">=", date('Y-m-d', strtotime('-15 day', strtotime($data->date))));
-        $te = DB::table('vendors')->where("exp_date", "<=", date('Y-m-d', strtotime('+15 day', strtotime($data->date))));
+        $v->where("registered_date", ">=", date('Y-m-d', strtotime('-30 day', strtotime($data->date))));
+        $te = DB::table('vendors')->where("exp_date", "<=", date('Y-m-d', strtotime('+30 day', strtotime($data->date))));
         // dd($v->get());
         return view('admin.admin', ['data' => $data, 't' => $t, 'te' => $te->count(), 'v' => $v->get(), 'e' => $te->get()]);
     }
@@ -85,8 +85,13 @@ class adminController extends Controller
             "exp_date" => $req['exp_date']
         ]);
         $d = DB::table('vendors')->orderBy('id', 'desc')->first();
-        $file = $req->file('bg_img');
-        $file->move("images", $d->id . ".jpg");
+        if ($file = $req->file('bg_img')) {
+            $file->move("images", $d->id . ".jpg");
+        } else {
+            $file = 'images/default.jpg';
+            $newfile = 'images/' . $d->id . '.jpg';
+            copy($file, $newfile);
+        }
         DB::statement("CREATE TABLE $d->id" . "_sections (
             id int NOT NULL AUTO_INCREMENT,
             name text,

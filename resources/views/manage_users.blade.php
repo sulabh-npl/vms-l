@@ -152,8 +152,10 @@
         <b>Reset Password</b><br>
         @csrf
         <input type="number" name="id" id="id2" hidden>
+        @if(!Session::has('admin-access'))
         <label for="Name">Your Password: </label>
         <input type="password" name="mypass"><br>
+        @endif
         <label for="Name">Password: </label>
         <input type="text" name="pass"><br>
         <label for="Name">Confirm Password: </label>

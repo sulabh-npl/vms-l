@@ -319,7 +319,8 @@
 
 </head>
 <body>
-
+<div class="container">
+    @include('menu')
 <div class="wrapper fadeInDown">
     <div id="formContent">
       <!-- Tabs Titles -->
@@ -349,5 +350,6 @@
 
     </div>
   </div>
+</div>
 </body>
 </html>

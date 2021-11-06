@@ -12,6 +12,7 @@
 </head>
 <body>
 <div class="container">
+    @include('menu')
     <div class="row">
         <div class="col-sm-4">
 <img src="/assets/img/about.jpg" alt="" style="width: 100%; min-height:100%; border:3px solid {{$info->register_colour}}; padding: 5px">

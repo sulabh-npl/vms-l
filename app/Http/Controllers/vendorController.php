@@ -421,12 +421,17 @@ class vendorController extends Controller
         if ($req->session()->get('access') == true && $req->session()->get('per') == 0) {
             $id = Session::get('id');
             $staff = Session::get('uid') . "_staff";
-            $hashed = DB::table($staff)->where('id', "=", $id)->first();
-            if (Hash::check($req['mypass'], $hashed->password) || Session::has('admin-access')) {
+            if (Session::has('admin-access')) {
                 $hash = Hash::make($req['pass']);
                 DB::update("update $staff set password= ? where id = ?", [$hash, $req['id']]);
             } else {
-                return redirect("/manage_users?error=Wrong Password");
+                $hashed = DB::table($staff)->where('id', "=", $id)->first();
+                if (Hash::check($req['mypass'], $hashed->password)) {
+                    $hash = Hash::make($req['pass']);
+                    DB::update("update $staff set password= ? where id = ?", [$hash, $req['id']]);
+                } else {
+                    return redirect("/manage_users?error=Wrong Password");
+                }
             }
             return redirect('/manage_users?success=User Password Modified');
         } else {

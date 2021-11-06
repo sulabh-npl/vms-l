@@ -307,10 +307,10 @@ a{
   text-rendering: auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
+  text-align: left;
   background: 0 0;
-  position: absolute;
-  right: 15px;
+  /* position: absolute; */
+  /* right: 15px; */
   top: 14px;
 }
 
@@ -329,7 +329,7 @@ a{
   font-weight: 400;
   font-style: normal;
   display: inline-block;
-  text-align: center;
+  text-align: left;
   text-decoration: none;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -356,7 +356,7 @@ a{
 
 .sidebar-wrapper .sidebar-menu .sidebar-dropdown.active > a:after {
   transform: rotate(90deg);
-  right: 17px;
+  /* right: 17px; */
 }
 
 /*--------------------------side-footer------------------------------*/
@@ -641,7 +641,7 @@ $('.top-content').backstretch("/images/{{Session::get('uid')}}.jpg");
                 @endif
                 @if(Session::get('section_id')==0)
                 <li class="sidebar-dropdown">
-                    <a class="nav-link" href="#"><i class="fa fa-list-alt" aria-hidden="true"></i> Sections  </a>
+                    <a class="nav-link" href="#" id="se"><i class="fa fa-list-alt" aria-hidden="true"></i> Sections  </a>
                     <ul class="sidebar-submenu collapse">
                         <li id="new">
                             <a class="" href="/addSection"><i class="fas fa-plus"></i>Add New Section</a>
@@ -654,7 +654,7 @@ $('.top-content').backstretch("/images/{{Session::get('uid')}}.jpg");
                 @endif
                 @if(Session::get('per')==0)
                 <li class="sidebar-dropdown">
-                    <a class="nav-link" href="#"><i class="fa fa-user" aria-hidden="true"></i> User Options</a>
+                    <a class="nav-link" href="#" id="us"><i class="fa fa-user" aria-hidden="true"></i> User Options</a>
                     <ul class="sidebar-submenu">
                         <li id="new">
                             <a class="" href="/new_user"><i class="fas fa-plus"></i>Add New User</a>
@@ -697,6 +697,7 @@ $('.top-content').backstretch("/images/{{Session::get('uid')}}.jpg");
         .btn-primary:disabled{
             background-color: chocolate
         }
+
         </style>
         @yield('content')    </main>
     <!-- page-content" -->
@@ -710,6 +711,12 @@ $('.top-content').backstretch("/images/{{Session::get('uid')}}.jpg");
             $(this).attr('style','background-color:coral');
         }
     );
+    $("#se").click(function(){
+        $(this).attr('style','text-align:left !important');
+    })
+    $("#us").click(function(){
+        $(this).attr('style','text-align:left !important');
+    })
 
 </script>
 

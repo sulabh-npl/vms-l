@@ -28,7 +28,7 @@
              </div>
              <div class="form-group">
                 <label>Background Image</label>
-                <input required type="file" name="bg_img" class="form-control" placeholder="Image">
+                <input type="file" name="bg_img" class="form-control" placeholder="Image">
              </div>
              <div class="form-group">
                 <label>Expires At</label>
