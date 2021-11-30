@@ -860,7 +860,7 @@ input.checkbox:checked:after {
                         <option value="5">Super Viewer</option>
                         @endif
                     </select></div>
-					<input type="button" style="width: 25%;margin-left:0px" value="Register">
+					<input type="button" style="width: 50%;margin-left:0px" value="Register">
 				</form>
 			</div>
 		</div>

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\adminController;
+use App\Http\Controllers\appController;
 use App\Http\Controllers\vendorController;
 use Illuminate\Support\Facades\Route;
 
@@ -53,6 +54,7 @@ Route::post('reset/staff', [vendorController::class, 'staff_reset']);
 
 Route::get('section', [vendorController::class, "section"]);
 Route::get('details', [vendorController::class, "view_self"]);
+
 Route::prefix("/admin")->group(function () {
     Route::get('/', [adminController::class, 'index']);
 
@@ -91,4 +93,7 @@ Route::prefix("/admin")->group(function () {
     Route::post('/logged', [adminController::class, "logged"]);
     Route::post('/otp', [adminController::class, 'otp']);
     Route::get('/otp', [adminController::class, 'otp_get']);
+});
+Route::prefix("/app")->group(function () {
+    Route::get('login/{c}/{d}/{e}', [appController::class, 'login']);
 });
